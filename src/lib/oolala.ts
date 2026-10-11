@@ -3,7 +3,10 @@ export type Service = { title: string; description: string; items: string[]; out
 export type FreeZone = { name: string; place: string; lead: string; text: string; points: string[]; fit: string };
 export type Faq = { question: string; answer: string };
 export type Plan = { name: string; lead: string; items: string[] };
-export const countries: Record<CountryKey, { name: string; city: string; label: string; intro: string; tags: string[]; services: Service[]; plans?: Plan[]; zones?: FreeZone[]; faq?: Faq[] }> = {
+export type Visa = { name: string; audience: string; text: string };
+export type Visas = { intro: string; types: Visa[]; steps?: string[] };
+export type Testimonial = { quote: string; name: string; context: string; country: CountryKey };
+export const countries: Record<CountryKey, { name: string; city: string; label: string; intro: string; tags: string[]; services: Service[]; plans?: Plan[]; visas?: Visas; zones?: FreeZone[]; faq?: Faq[] }> = {
   emirats: {
     name: 'Émirats arabes unis', city: 'Dubai', label: 'Un nouvel élan pour votre activité.',
     intro: 'Créez votre société en free zone, à RAKEZ, à Dubai Silicon Oasis ou dans la zone la plus adaptée à votre activité. Licence, banque, visas et suivi : un accompagnement personnel, du premier échange au renouvellement.',
@@ -12,13 +15,24 @@ export const countries: Record<CountryKey, { name: string; city: string; label: 
       { title: 'Création de société', description: 'La bonne structure commence par la compréhension de votre activité.', items: ['Choix de la free zone et de la licence : RAKEZ, Dubai Silicon Oasis, Meydan, DMCC et autres', 'Statuts, structure des associés et dépôt du dossier', 'Licence et certificat de constitution'], outcome: 'Une société et sa licence en free zone, prêtes à exercer.' },
       { title: 'Banque & domiciliation', description: 'Une adresse officielle et un dossier bancaire complet pour démarrer.', items: ['Bureau, flexi-desk ou adresse adaptée à votre zone', 'Préparation et suivi du dossier bancaire'], outcome: 'Une adresse officielle et un dossier bancaire déposé. Ouverture soumise à la décision de la banque.' },
       { title: 'Visas & résidence', description: 'Un accompagnement pour les fondateurs, les équipes et les familles.', items: ['Visas investisseur, partenaire, employés et dépendants', 'Examen médical et Emirates ID', 'Renouvellements et annulations'], outcome: 'Des dossiers de visa et d’Emirates ID préparés et suivis, sous réserve de la décision des autorités.' },
-      { title: 'Comptabilité & suivi', description: 'Les obligations de votre entreprise, suivies année après année.', items: ['Enregistrement à l’impôt sur les sociétés et à la TVA', 'Suivi des déclarations et renouvellement de licence', 'Changement d’associés, modification, transfert ou liquidation'], outcome: 'Un calendrier administratif clair et une société suivie dans la durée.' },
+      { title: 'Comptabilité & suivi', description: 'Les obligations de votre entreprise, suivies année après année.', items: ['Enregistrement à l’impôt sur les sociétés et à la TVA', 'Tenue comptable et déclarations confiées à nos cabinets partenaires agréés', 'Suivi des déclarations et renouvellement de licence', 'Changement d’associés, modification, transfert ou liquidation'], outcome: 'Un calendrier administratif clair et une société suivie dans la durée.' },
     ],
     plans: [
       { name: 'Indépendant & consultant', lead: 'Pour exercer seul, avec une structure simple.', items: ['Licence de free zone et adresse officielle en flexi-desk', 'Visa de résidence et Emirates ID pour le fondateur', 'Dossier bancaire professionnel préparé et suivi', 'Enregistrement à l’impôt sur les sociétés'] },
       { name: 'Start-up & petite équipe', lead: 'Pour lancer une activité avec des associés ou de premiers salariés.', items: ['Licence, statuts et structure des associés', 'Flexi-desk ou bureau partagé selon le nombre de visas', 'Visas des associés, des salariés et de leurs familles', 'Enregistrement à l’impôt sur les sociétés et à la TVA si nécessaire'] },
       { name: 'Société établie & filiale', lead: 'Pour implanter une société existante ou une équipe complète.', items: ['Filiale ou succursale d’une société étrangère', 'Coordination de la légalisation des documents de la société mère', 'Bureau privé et visas pour l’ensemble de l’équipe', 'Calendrier fiscal, renouvellements et suivi annuel'] },
     ],
+    visas: {
+      intro: 'Votre société vous ouvre droit à la résidence. Nous choisissons avec vous le visa adapté, pour vous, vos associés, vos salariés et votre famille.',
+      types: [
+        { name: 'Visa investisseur ou associé', audience: 'Fondateurs et associés', text: 'Rattaché à votre société de free zone, il vous permet de résider aux Émirats et se renouvelle avec votre licence.' },
+        { name: 'Visa salarié', audience: 'Vos équipes', text: 'Pour recruter aux Émirats, dans la limite du nombre de visas permis par votre bureau.' },
+        { name: 'Visa famille', audience: 'Conjoint, enfants, parents', text: 'Vous parrainez vos proches dès que vous remplissez les conditions de revenus et de logement.' },
+        { name: 'Golden Visa', audience: 'Investisseurs, entrepreneurs, talents', text: 'Une résidence de 10 ans, sans parrain, pour les profils éligibles. Nous vérifions votre éligibilité et montons le dossier.' },
+        { name: 'Permis freelance', audience: 'Indépendants', text: 'Exercer en votre nom propre avec un visa de résidence, sans créer de société, dans les free zones qui le proposent.' },
+      ],
+      steps: ['Permis d’entrée, ou changement de statut si vous êtes déjà aux Émirats', 'Examen médical', 'Biométrie et Emirates ID', 'Visa émis, puis renouvellements suivis'],
+    },
     zones: [
       { name: 'RAKEZ', place: 'Ras Al Khaimah Economic Zone', lead: 'La free zone que nous avons choisie pour nous-mêmes.', text: 'Oolala Next FZ-LLC est immatriculée à RAKEZ. Nous connaissons son parcours de l’intérieur : dossier, licence, visas et renouvellement.', points: ['Un large choix d’activités : services, conseil, commerce, e-commerce et industrie', 'Des formules flexibles, du flexi-desk au bureau ou à l’entrepôt', 'Une création qui se prépare en grande partie à distance', 'Des visas de résidence valables dans tous les Émirats, y compris pour vivre à Dubai'], fit: 'Consultants, indépendants, sociétés de services et de commerce qui veulent une structure solide avec un budget maîtrisé.' },
       { name: 'Dubai Silicon Oasis', place: 'DSO · Dubai', lead: 'Le pôle technologique de Dubai.', text: 'Free zone et parc technologique intégré, Dubai Silicon Oasis réunit bureaux, campus pour start-up et quartier résidentiel. Une adresse à Dubai, au cœur d’un écosystème tech.', points: ['Une licence et une adresse à Dubai', 'Un environnement tourné vers la tech, le logiciel et l’innovation', 'Dtec, le campus dédié aux start-up et aux entrepreneurs', 'Bureaux, flexi-desks et logements réunis sur un même site'], fit: 'Start-up, sociétés tech et logiciel, fondateurs qui souhaitent une adresse et un écosystème à Dubai.' },
@@ -43,6 +57,15 @@ export const countries: Record<CountryKey, { name: string; city: string; label: 
       { title: 'Séjour & résidence', description: 'Un parcours de séjour cohérent avec votre projet.', items: ['Cadrage du séjour et de ses conditions', 'Permis de résidence lié à l’activité ou à l’investissement, selon éligibilité', 'Constitution des dossiers et suivi des échéances'], outcome: 'Un plan de séjour clair et un dossier de résidence, lorsque vous êtes éligible.' },
       { title: 'Fiscalité & déclarations', description: 'Votre situation fiscale clarifiée dès le départ.', items: ['Enregistrement fiscal et à la TVA si nécessaire', 'Étude du régime selon l’activité et le chiffre d’affaires', 'Suivi des déclarations périodiques'], outcome: 'Un calendrier de déclarations et une situation fiscale suivie.' },
     ],
+    visas: {
+      intro: 'La Géorgie accueille facilement les ressortissants de nombreux pays. Pour rester durablement, un permis de résidence se construit autour de votre activité ou de votre investissement.',
+      types: [
+        { name: 'Séjour sans visa', audience: 'De nombreuses nationalités', text: 'Jusqu’à un an de séjour sans visa pour de nombreux passeports, dont les passeports européens. Nous vérifions votre situation.' },
+        { name: 'Résidence liée à l’activité', audience: 'Entrepreneurs et salariés', text: 'Un permis de résidence fondé sur votre société, votre activité ou votre emploi en Géorgie, selon les conditions en vigueur.' },
+        { name: 'Résidence liée à l’investissement', audience: 'Investisseurs immobiliers', text: 'L’acquisition d’un bien peut ouvrir droit à un permis de résidence, selon sa valeur et votre éligibilité.' },
+        { name: 'Famille', audience: 'Conjoint et enfants', text: 'Vos proches peuvent obtenir un permis de résidence rattaché au vôtre.' },
+      ],
+    },
   },
   france: {
     name: 'France', city: 'Paris', label: 'Votre implantation, en toute clarté.',
@@ -54,8 +77,19 @@ export const countries: Record<CountryKey, { name: string; city: string; label: 
       { title: 'Titres de séjour & installation', description: 'Les démarches pour les dirigeants et leur famille.', items: ['Dossiers de séjour pour créateurs d’entreprise et dirigeants', 'Suivi avec la préfecture', 'Accompagnement à l’installation de la famille'], outcome: 'Un dossier de séjour complet, déposé et suivi, sous réserve de la décision des autorités.' },
       { title: 'Comptabilité & conformité', description: 'Les échéances de votre société française, coordonnées pour vous.', items: ['Coordination avec votre expert-comptable', 'Calendrier fiscal, TVA et obligations sociales', 'Approbation annuelle des comptes et dépôt au greffe'], outcome: 'Un calendrier fiscal et administratif tenu à jour.' },
     ],
+    visas: {
+      intro: 'Pour créer ou diriger une société en France depuis l’étranger, le titre de séjour dépend de votre projet, de votre investissement et de votre nationalité.',
+      types: [
+        { name: 'Passeport Talent', audience: 'Créateurs, investisseurs, dirigeants', text: 'Un titre pluriannuel pour les projets d’entreprise innovants, les investisseurs et les mandataires sociaux éligibles.' },
+        { name: 'Carte entrepreneur', audience: 'Créateurs d’entreprise', text: 'Pour exercer une activité commerciale ou libérale viable, sur présentation d’un projet solide.' },
+        { name: 'Famille accompagnante', audience: 'Conjoint et enfants', text: 'Les proches d’un titulaire du Passeport Talent peuvent l’accompagner avec un titre de séjour dédié.' },
+        { name: 'Ressortissants européens', audience: 'UE, EEE et Suisse', text: 'Aucun titre de séjour n’est nécessaire pour vous installer et créer votre société en France.' },
+      ],
+    },
   },
 };
+// Published only once real, consented client quotes are added; the section stays hidden while empty.
+export const testimonials: Testimonial[] = [];
 export const countryPaths = { emirats: '/emirats', georgie: '/georgie', france: '/france' } as const;
 export const whatsappUrl = 'https://wa.me/971506838777';
 export function pageHead(title: string, description: string, path: string) {

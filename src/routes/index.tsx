@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, ArrowDown, Building2, BriefcaseBusiness, ShieldCheck, UserRound, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ContactBand, DaryaSection, Eyebrow } from '@/components/oolala/shared';
+import { ContactBand, DaryaSection, Eyebrow, Testimonials } from '@/components/oolala/shared';
 import { countries, countryPaths, pageHead, type CountryKey } from '@/lib/oolala';
 import dubai from '@/assets/dubai.jpg.asset.json';
 import tbilisi from '@/assets/tbilisi.jpg.asset.json';
@@ -26,6 +26,6 @@ function Index() {
       { icon: Building2, title: 'J’investis en Géorgie', text: 'Des biens achevés à Gudauri et Tbilissi, sélectionnés selon votre projet, de la recherche à la gestion locative.', link: 'Découvrir l’investissement', to: '/georgie/investir' },
     ].map(({ icon: Icon, ...item }) => <div className="audience-item" key={item.title}><Icon size={25} strokeWidth={1.3} /><h3>{item.title}</h3><p>{item.text}</p><Link to={item.to} className="text-link">{item.link} <ArrowUpRight size={15} /></Link></div>)}</div></div></section>
     <section className="section-space site-wrap"><div className="section-heading"><div><Eyebrow>La méthode Oolala</Eyebrow><h2 className="section-title">Une direction claire, à chaque étape.</h2></div><p className="section-description">Nous avançons dans le bon ordre, avec vous.<br />Du premier échange au suivi quotidien.</p></div><div className="process-grid">{[{ title: 'Comprendre votre projet', text: 'Votre activité, votre résidence et vos objectifs. Nous prenons le temps de définir ensemble le pays et la structure adaptés.' }, { title: 'Tout mettre en place', text: 'Société, licence, adresse, banque et visas. Nous coordonnons les démarches avec les partenaires locaux compétents.' }, { title: 'Rester à vos côtés', text: 'Renouvellements, déclarations et évolutions. Votre interlocutrice reste la même et connaît votre dossier.' }].map((step, i) => <div className="process-step" key={step.title}><span className="step-number">0{i + 1}</span><h3>{step.title}</h3><p>{step.text}</p></div>)}</div></section>
-    <DaryaSection /><ContactBand />
+    <Testimonials /><DaryaSection /><ContactBand />
   </>;
 }

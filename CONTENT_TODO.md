@@ -13,4 +13,6 @@
 - Mainland company setup is mentioned only as guidance in the FAQ, not as an offered service, until confirmed.
 - Validate the three Emirates packages (Indépendant, Start-up, Société établie). No prices are shown and each links to a quote request. Confirm that branch or subsidiary setup and legalisation coordination are offered.
 - Confirm the "existing company takeover" offer (home milestone, Emirates FAQ, contact option): follow-up and coordination of overdue filings with licensed professionals.
-- Accounting subscription, prices, testimonials and partner badges (as on competitor sites) are not published until Oolala confirms the offer and supplies real, consented testimonials.
+- Accounting: decided, no dedicated page. Bookkeeping and filings are entrusted to licensed partner firms; the site says so in the Emirates accounting service.
+- Testimonials: the section is built and hidden while `testimonials` in `src/lib/oolala.ts` is empty. Add real quotes, with the client's written consent, as `{ quote, name, context, country }`; they then appear on the home page and on the matching country page.
+- Validate the visa content for the three countries: Golden Visa (10 years), freelance permit, family sponsorship conditions, Georgia visa-free stay of up to one year, Passeport Talent and Carte entrepreneur. No salary, investment or fee threshold is published.

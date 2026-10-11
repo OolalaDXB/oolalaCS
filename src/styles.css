@@ -290,6 +290,20 @@ button, input, select, textarea { font: inherit; }
 .network-professional h3 { font-size: 21px; font-weight: 500; margin: 20px 0 12px; }
 @media (max-width: 850px) { .network-heading { grid-template-columns: 1fr; gap: 20px; } .bank-network { gap: 25px; } .network-professionals { gap: 25px; } }
 @media (max-width: 600px) { .bank-network, .network-professionals { grid-template-columns: 1fr; gap: 28px; } .bank-network { margin-top: 30px; } .bank-logos { gap: 22px; } .bank-brand { gap: 8px; } .bank-brand span { font-size: 17px; } .bank-logo-premium { width: 125px; } .network-professional { border-top: 1px solid var(--border); padding-top: 24px; } .network-professional h3 { margin-top: 14px; } }
+.visa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
+.visa-card { border-top: 1px solid var(--border); padding-top: 24px; }
+.visa-card h3 { font-size: 22px; font-weight: 500; margin: 12px 0 10px; }
+.visa-card p { font-size: 13px; line-height: 1.8; color: var(--muted-foreground); }
+.visa-steps { list-style: none; padding: 0; margin: 45px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.visa-steps li { border: 1px solid var(--border); border-radius: 5px; padding: 20px; font-size: 13px; line-height: 1.7; display: grid; gap: 18px; }
+.visa-steps span { font-size: 12px; color: var(--muted-foreground); }
+.testimonial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 40px; }
+.testimonial { margin: 0; border-top: 1px solid var(--border); padding-top: 26px; }
+.testimonial blockquote { margin: 0; font-family: var(--font-serif); font-size: 22px; line-height: 1.45; font-style: italic; }
+.testimonial figcaption { margin-top: 20px; display: grid; gap: 4px; font-size: 12px; color: var(--muted-foreground); }
+.testimonial figcaption strong { font-size: 13px; font-weight: 500; color: var(--foreground); }
+@media (max-width: 850px) { .visa-steps { grid-template-columns: 1fr 1fr; } .testimonial-grid { grid-template-columns: 1fr; gap: 30px; } }
+@media (max-width: 600px) { .visa-steps { grid-template-columns: 1fr; gap: 12px; } .visa-steps li { gap: 8px; padding: 16px; } }
 .milestone-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; margin-top: 40px; }
 .milestone-grid .audience-item h3 { font-size: 22px; }
 .milestone-grid .audience-item p { font-size: 13px; }
@@ -380,7 +394,7 @@ button, input, select, textarea { font: inherit; }
       animation-timeline: view();
       animation-range: entry 0% entry 65%;
     }
-    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .plan-card, .audience-section .country-fact) {
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .plan-card, .visa-card, .testimonial, .audience-section .country-fact) {
       --entrance-start: 0%;
       --entrance-end: 65%;
       animation: editorial-rise linear both;
