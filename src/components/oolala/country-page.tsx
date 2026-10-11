@@ -6,9 +6,9 @@ import { type CountryKey } from '@/lib/oolala';
 import { useT } from '@/lib/i18n';
 import { ContactBand, DaryaSection, Eyebrow } from './shared';
 import { UaeBankNetwork } from './uae-network';
-import dubai from '@/assets/dubai.jpg.asset.json';
-import tbilisi from '@/assets/tbilisi.jpg.asset.json';
-import paris from '@/assets/paris.jpg.asset.json';
+const dubai = { url: '/images/dubai.jpg' };
+const tbilisi = { url: '/images/tbilisi.jpg' };
+const paris = { url: '/images/paris.jpg' };
 
 const photos = { emirats: dubai, georgie: tbilisi, france: paris };
 export function CountryPage({ country }: { country: CountryKey }) {

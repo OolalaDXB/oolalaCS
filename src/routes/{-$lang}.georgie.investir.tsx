@@ -3,10 +3,10 @@ import { Check, Building2, ClipboardCheck, Scale } from 'lucide-react';
 import { ContactForm } from '@/components/oolala/contact-form';
 import { DaryaSection, Eyebrow } from '@/components/oolala/shared';
 import { localeHead, useT } from '@/lib/i18n';
-import bankOfGeorgia from '@/assets/bank-of-georgia.svg.asset.json';
-import solo from '@/assets/solo.svg.asset.json';
-import tbcBank from '@/assets/tbc-bank.svg.asset.json';
-import tbcConcept from '@/assets/tbc-concept.svg.asset.json';
+const bankOfGeorgia = { url: '/images/bank-of-georgia.svg' };
+const solo = { url: '/images/solo.svg' };
+const tbcBank = { url: '/images/tbc-bank.svg' };
+const tbcConcept = { url: '/images/tbc-concept.svg' };
 export const Route = createFileRoute('/{-$lang}/georgie/investir')({ head: ({ params }) => localeHead(params.lang, 'invest', '/georgie/investir'), component: InvestPage });
 function InvestPage() {
   const { t } = useT(); const v = t.invest;

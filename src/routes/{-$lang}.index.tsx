@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { ContactBand, DaryaSection, Eyebrow } from '@/components/oolala/shared';
 import { countryKeys as keys, countryPaths } from '@/lib/oolala';
 import { localeHead, useT } from '@/lib/i18n';
-import dubai from '@/assets/dubai.jpg.asset.json';
-import tbilisi from '@/assets/tbilisi.jpg.asset.json';
-import paris from '@/assets/paris.jpg.asset.json';
+const dubai = { url: '/images/dubai.jpg' };
+const tbilisi = { url: '/images/tbilisi.jpg' };
+const paris = { url: '/images/paris.jpg' };
 
 const photos = { emirats: dubai, georgie: tbilisi, france: paris };
 export const Route = createFileRoute('/{-$lang}/')({
