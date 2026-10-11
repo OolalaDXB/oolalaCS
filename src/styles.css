@@ -309,18 +309,58 @@ button, input, select, textarea { font: inherit; }
 .form-status { color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
 .skip-link { position: absolute; left: -10000px; top: 10px; z-index: 100; background: var(--background); color: var(--foreground); padding: 10px; }
 .skip-link:focus { left: 10px; }
-.reveal { animation: reveal .65s ease-out both; }
-@keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .section-space, .cta-band, .investment-network {
-      animation: zone-in linear both;
+/* Individual entrances keep long sections readable while creating a visual rhythm. */
+@keyframes editorial-rise {
+  from { opacity: 0; translate: 0 38px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes photo-open {
+  from { opacity: .35; clip-path: inset(0 0 12% 0 round 5px); scale: .96; }
+  to { opacity: 1; clip-path: inset(0 0 0 0 round 5px); scale: 1; }
+}
+@keyframes line-open { from { scale: 0 1; } to { scale: 1 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .page-intro > *, .hero-content > .reveal > * {
+    animation: editorial-rise .85s cubic-bezier(.22, 1, .36, 1) both;
+  }
+  .page-intro > :nth-child(2), .hero-content > .reveal > :nth-child(2) { animation-delay: .12s; }
+  .page-intro > :nth-child(3), .hero-content > .reveal > :nth-child(3) { animation-delay: .24s; }
+  .hero-content > .reveal > :nth-child(4) { animation-delay: .36s; }
+  .country-main-photo { animation: photo-open 1.2s cubic-bezier(.22, 1, .36, 1) .15s both; }
+  .country-hero-grid .country-fact { animation: editorial-rise .9s cubic-bezier(.22, 1, .36, 1) both; }
+  .country-hero-grid .country-fact:nth-child(1) { animation-delay: .25s; }
+  .country-hero-grid .country-fact:nth-child(2) { animation-delay: .38s; }
+  .country-hero-grid .country-fact:nth-child(3) { animation-delay: .51s; }
+  .country-hero-grid .country-fact:nth-child(4) { animation-delay: .64s; }
+  .hero-photo { animation: photo-open 1.5s cubic-bezier(.22, 1, .36, 1) both; }
+  .text-link svg, .hero-buttons svg, .header-cta svg, .cta-inner a svg, .country-card-title svg { transition: translate .3s cubic-bezier(.22, 1, .36, 1); }
+  .text-link:hover svg, .hero-buttons a:hover svg, .header-cta:hover svg, .cta-inner a:hover svg, .country-card:hover .country-card-title svg { translate: 3px -3px; }
+  .desktop-nav a::after { content: ''; position: absolute; bottom: 6px; left: 0; width: 100%; height: 1px; background: currentColor; scale: 0 1; transform-origin: left; transition: scale .3s ease; }
+  .desktop-nav a:hover::after, .desktop-nav a[data-status='active']::after { scale: 1 1; }
+  .country-fact { transition: translate .35s ease, border-color .35s ease; }
+  .country-fact:hover { translate: 0 -3px; border-color: var(--foreground); }
+  .service-tabs [aria-selected='true'] { animation: editorial-rise .3s ease both; }
+  @supports (animation-timeline: view()) {
+    :is(.section-heading, .network-heading, .audience-section .section-title, .service-row, .investment-zone, .investment-summary, .darya-copy, .cta-inner > *, .contact-grid > *, .investment-teaser) {
+      animation: editorial-rise linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 45%;
+      animation-range: entry 0% entry 65%;
     }
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .audience-section .country-fact) {
+      --entrance-start: 0%;
+      --entrance-end: 65%;
+      animation: editorial-rise linear both;
+      animation-timeline: view();
+      animation-range: entry var(--entrance-start) entry var(--entrance-end);
+    }
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .audience-section .country-fact):nth-child(2) { --entrance-start: 12%; --entrance-end: 77%; }
+    :is(.country-card, .process-step, .network-professional, .audience-section .country-fact):nth-child(3) { --entrance-start: 24%; --entrance-end: 89%; }
+    .audience-section .country-fact:nth-child(4) { --entrance-start: 30%; --entrance-end: 95%; }
+    .darya-photo { animation: photo-open linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+    .process-step { position: relative; border-top-color: transparent; }
+    .process-step::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: var(--foreground); transform-origin: left; animation: line-open linear both; animation-timeline: view(); animation-range: entry 0% entry 90%; }
   }
 }
-@keyframes zone-in { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
 @media (min-width: 1600px) { .home-hero { height: 760px; } }
 @media (max-width: 1100px) { .site-wrap { width: calc(100% - 64px); } .desktop-nav { gap: 18px; } .brand-logo { height: 62px; } .header-actions { gap: 12px; } .locale-label { display: none; } .header-cta { padding-inline: 13px; } .hero-heading { font-size: 66px; } .hero-content { padding-top: 65px; } .darya-grid { gap: 55px; } .contact-grid { gap: 45px; } }
 @media (max-width: 850px) { .desktop-nav, .header-actions .header-cta { display: none; } .mobile-toggle { display: inline-flex; } .site-header { height: 80px; } .mobile-nav { top: 80px; } .brand-logo { height: 54px; } .hero-heading { font-size: 58px; } .hero-destinations { gap: 14px; } .hero-note { display: none; } .hero-bottom { justify-content: flex-end; } .intro-strip { flex-direction: column; align-items: flex-start; justify-content: center; padding-block: 22px; gap: 15px; } .intro-services { gap: 22px; } .section-space { padding-block: 65px; } .section-title { font-size: 35px; } .section-heading { align-items: flex-start; flex-direction: column; gap: 18px; } .section-description { max-width: 550px; } .country-grid { gap: 14px; } .country-card-info { padding: 17px; } .country-card h3 { font-size: 19px; } .country-card-tags { gap: 5px; } .audience-grid { gap: 35px; } .darya-grid { gap: 40px; } .cta-inner { align-items: flex-start; flex-direction: column; } .country-hero-grid { grid-template-columns: 1fr; } .country-main-photo { min-height: 0; height: 370px; } .country-fact { gap: 24px; } .contact-grid { grid-template-columns: 1fr; gap: 55px; } .page-title { font-size: 48px; } }
