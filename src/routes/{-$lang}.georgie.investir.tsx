@@ -59,7 +59,7 @@ function GeorgiaNetwork() {
       </div>
       <p className="network-caveat">{v.caveat}</p>
       <div className="network-professionals">
-        {v.pros.map((pro, i) => { const Icon = icons[i]; return <div className="network-professional" key={pro.title}><Icon aria-hidden="true" /><h3>{pro.title}</h3><p>{pro.text}</p></div>; })}
+        {v.pros.map((pro, i) => { const Icon = icons[i] ?? Building2; return <div className="network-professional" key={pro.title}><Icon aria-hidden="true" /><h3>{pro.title}</h3><p>{pro.text}</p></div>; })}
       </div>
     </div>
   </section>;
