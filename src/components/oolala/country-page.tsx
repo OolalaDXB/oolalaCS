@@ -4,6 +4,7 @@ import { ArrowUpRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { countries, type CountryKey } from '@/lib/oolala';
 import { ContactBand, DaryaSection, Eyebrow } from './shared';
+import { UaeBankNetwork } from './uae-network';
 import dubai from '@/assets/dubai.jpg.asset.json';
 import tbilisi from '@/assets/tbilisi.jpg.asset.json';
 import paris from '@/assets/paris.jpg.asset.json';
