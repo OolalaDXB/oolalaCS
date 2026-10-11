@@ -1,3 +1,4 @@
+import { offerRu } from './offer-ru';
 import type { Dict } from './fr';
 
 export const ru: Dict = {
@@ -91,4 +92,5 @@ export const ru: Dict = {
     project: 'Ваш проект', projectPh: 'Ваша деятельность, ситуация, планы…', consent: 'Ваши данные используются только для ответа на запрос. Сообщение будет подготовлено в WhatsApp; вы сможете проверить его перед отправкой.', submit: 'Продолжить в WhatsApp', status: 'Ваше сообщение готово в WhatsApp. Подтвердите отправку, чтобы связаться с Дарьей.',
   },
   notFound: { title: 'Страница не найдена', text: 'Эта страница не существует или была перемещена.', home: 'На главную' },
+  offer: offerRu,
 };

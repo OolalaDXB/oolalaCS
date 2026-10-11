@@ -8,3 +8,9 @@
 - Confirm the Georgian invoicing entity, additional legacy services, and production domain before publication. No unconfirmed entity or additional service is displayed.
 - Validate adapted affirmative homepage headlines and Darya introduction against the supplied brief.
 - Residency and financial figures that require publication-date verification are intentionally omitted.
+## Offre en trois piliers (Société, Installation, Investissement)
+- Investissement Émirats et France : seule une présentation sobre est publiée. À confirmer : zones ciblées, types de biens, intervenants partenaires (agents, notaires, conseils), gestion locative éventuelle.
+- France, Installation : confirmer si un accompagnement bancaire personnel est proposé (non affiché pour l’instant).
+- Émirats et France, Société : confirmer les modifications de société proposées en France (non affichées) et la liste exacte des free zones à citer.
+- Géorgie, Installation : confirmer l’accompagnement familial (scolarité, logement) avant de le détailler.
+- Relecture par Darya des nouveaux textes EN et RU des trois piliers.
