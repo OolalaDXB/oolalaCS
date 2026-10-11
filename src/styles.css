@@ -311,6 +311,9 @@ button, input, select, textarea { font: inherit; }
 .plan-card { border: 1px solid var(--border); border-radius: 5px; padding: 30px; display: flex; flex-direction: column; }
 .plan-card h3 { font-size: 24px; font-weight: 500; margin: 0 0 10px; }
 .plan-card > p { font-size: 13px; line-height: 1.75; color: var(--muted-foreground); }
+.plan-price { display: grid; gap: 4px; margin-top: 22px; padding-block: 16px; border-block: 1px solid var(--border); }
+.plan-price strong { font-size: 20px; font-weight: 500; }
+.plan-price span { font-size: 11px; color: var(--muted-foreground); }
 .plan-card ul { list-style: none; padding: 0; margin: 24px 0; flex: 1; }
 .plan-card li { display: flex; gap: 12px; align-items: baseline; margin-bottom: 10px; font-size: 13px; line-height: 1.7; }
 .plan-card li svg { flex-shrink: 0; transform: translateY(3px); }
