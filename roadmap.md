@@ -5,3 +5,4 @@
 - [x] Clearly identify email confirmation and actual property photos still needed in CONTENT_TODO.md.
 - [x] Highlight Georgia banking contacts with official logos, trusted property professionals, qualified developers and in-house opportunity tracking.
 - [x] Verify updated investment page and logo rendering.
+- [ ] Add expressive, restrained animations while preserving uniform white sections, and verify motion and reduced-motion behavior.
