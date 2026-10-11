@@ -1,3 +1,4 @@
+import { offerFr } from './offer-fr';
 export const fr = {
   locale: 'fr',
   meta: {
@@ -89,6 +90,7 @@ export const fr = {
     project: 'Votre projet', projectPh: 'Votre activité, votre situation, vos envies…', consent: 'Vos informations sont utilisées uniquement pour répondre à votre demande. Votre message sera préparé dans WhatsApp ; vous pourrez le relire avant de l’envoyer.', submit: 'Continuer sur WhatsApp', status: 'Votre message est prêt dans WhatsApp. Validez son envoi pour contacter Darya.',
   },
   notFound: { title: 'Page introuvable', text: 'Cette page n’existe pas ou a été déplacée.', home: 'Retour à l’accueil' },
+  offer: offerFr,
 };
 
 type Widen<T> = T extends string ? string : T extends readonly (infer U)[] ? Widen<U>[] : T extends object ? { [K in keyof T]: Widen<T[K]> } : T;

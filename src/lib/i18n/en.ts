@@ -1,3 +1,4 @@
+import { offerEn } from './offer-en';
 import type { Dict } from './fr';
 
 export const en: Dict = {
@@ -91,4 +92,5 @@ export const en: Dict = {
     project: 'Your project', projectPh: 'Your activity, your situation, your plans…', consent: 'Your information is used only to answer your request. Your message will be prepared in WhatsApp; you can review it before sending.', submit: 'Continue on WhatsApp', status: 'Your message is ready in WhatsApp. Confirm sending it to contact Darya.',
   },
   notFound: { title: 'Page not found', text: 'This page does not exist or has been moved.', home: 'Back to home' },
+  offer: offerEn,
 };
