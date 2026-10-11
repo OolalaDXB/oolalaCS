@@ -17,7 +17,7 @@ export function CountryPage({ country }: { country: CountryKey }) {
     sync(); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync);
   }, []);
   const select = (i: number) => { setTab(i); history.replaceState(null, '', `#${pillarSlugs[i]}`); };
-  const p = o.countries[country].pillars[tab];
+  const p = o.countries[country].pillars[tab] ?? o.countries[country].pillars[0]!;
   const list = (items: string[]) => <ul>{items.map(item => <li key={item}><Check size={15} /><span>{item}</span></li>)}</ul>;
   return <><section className="page-intro site-wrap reveal"><Eyebrow>Oolala · {data.city}</Eyebrow><h1 className="page-title">{data.title}</h1><p className="page-lead">{data.intro}</p></section>
     <div className="site-wrap country-hero-grid"><img className="country-main-photo" src={photos[country].url} alt={`${c.photoAlt} ${data.city}`} /><div className="country-facts">{o.tabs.map((label, i) => <a href={`#${pillarSlugs[i]}`} className="country-fact" key={label}><strong>{label}</strong><span>{o.countries[country].cards[i]}</span></a>)}</div></div>
