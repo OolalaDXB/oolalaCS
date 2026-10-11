@@ -6,7 +6,7 @@ export function UaeBankNetwork() {
   return <section className="investment-network section-space" aria-labelledby="uae-banks-title">
     <div className="site-wrap">
       <div className="network-heading">
-        <div><h2 className="section-title" id="uae-banks-title">Des contacts bancaires établis.</h2></div>
+        <div><Eyebrow>Nos contacts aux Émirats</Eyebrow><h2 className="section-title" id="uae-banks-title">Des contacts bancaires établis.</h2></div>
         <p className="section-description">Ouvrir un compte aux Émirats demande un dossier complet et des interlocuteurs qui connaissent votre structure. Nous préparons votre dossier et le suivons avec nos contacts privilégiés auprès des banques.</p>
       </div>
       <div className="bank-network">
