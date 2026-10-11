@@ -2,25 +2,27 @@ import { useState, type FormEvent } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { whatsappUrl } from '@/lib/oolala';
+import { useT } from '@/lib/i18n';
 
 export function ContactForm({ investment = false }: { investment?: boolean }) {
+  const { t } = useT(); const f = t.form;
   const [prepared, setPrepared] = useState(false);
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if (data.get('website')) return;
-    const lines = ['Bonjour Darya,', investment ? 'Je souhaite parler d’un investissement immobilier en Géorgie.' : 'Je souhaite vous parler de mon projet.', ...Array.from(data.entries()).filter(([key, value]) => key !== 'website' && String(value).trim()).map(([key, value]) => `${key} : ${value}`)];
+    const lines = [f.hello, investment ? f.introInvest : f.intro, ...Array.from(data.entries()).filter(([key, value]) => key !== 'website' && String(value).trim()).map(([key, value]) => `${key}: ${value}`)];
     window.open(`${whatsappUrl}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer');
     setPrepared(true);
   }
-  return <form className="contact-form" onSubmit={submit}>
+  return <form className="contact-form" onSubmit={submit} key={t.locale}>
     <input className="hidden" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-    <div className="form-two"><div className="field"><label htmlFor="name">Nom complet *</label><input id="name" name="Nom" autoComplete="name" placeholder="Votre nom" required /></div><div className="field"><label htmlFor="email">Email *</label><input type="email" id="email" name="Email" autoComplete="email" placeholder="vous@entreprise.com" required /></div></div>
-    <div className="form-two"><div className="field"><label htmlFor="phone">Téléphone / WhatsApp</label><input type="tel" id="phone" name="Téléphone" autoComplete="tel" placeholder="+33 …" /></div><div className="field"><label htmlFor="country">Pays concerné *</label><select id="country" name="Pays" defaultValue={investment ? 'Géorgie' : ''} required><option value="" disabled>Choisir un pays</option><option>Émirats arabes unis</option><option>Géorgie</option><option>France</option><option>Plusieurs pays</option><option>À définir ensemble</option></select></div></div>
-    {investment ? <><div className="form-two"><div className="field"><label htmlFor="budget">Budget envisagé</label><input id="budget" name="Budget" placeholder="Montant et devise" /></div><div className="field"><label htmlFor="goal">Votre objectif</label><select id="goal" name="Objectif"><option>Revenu locatif</option><option>Résidence</option><option>Résidence secondaire</option><option>À définir</option></select></div></div><div className="field"><label htmlFor="zone">Zone d’intérêt</label><select id="zone" name="Zone"><option>Gudauri</option><option>Tbilissi</option><option>Tbilisi Hills</option><option>Recherche sur mesure</option></select></div></> : <div className="field"><label htmlFor="need">Votre besoin</label><select id="need" name="Besoin"><option>Création ou gestion de société</option><option>Comptabilité et fiscalité</option><option>Résidence et visas</option><option>Installation et relocation</option><option>Investissement immobilier en Géorgie</option><option>Autre</option></select></div>}
-    <div className="field"><label htmlFor="message">Votre projet *</label><textarea id="message" name="Projet" placeholder="Votre activité, votre situation, vos envies…" required /></div>
-    <p className="form-consent">Vos informations sont utilisées uniquement pour répondre à votre demande. Votre message sera préparé dans WhatsApp ; vous pourrez le relire avant de l’envoyer.</p>
-    <Button type="submit" className="form-submit">Continuer sur WhatsApp <ArrowUpRight /></Button>
-    {prepared && <p role="status" className="form-status">Votre message est prêt dans WhatsApp. Validez son envoi pour contacter Darya.</p>}
+    <div className="form-two"><div className="field"><label htmlFor="name">{f.name} *</label><input id="name" name={f.name} autoComplete="name" placeholder={f.namePh} required /></div><div className="field"><label htmlFor="email">{f.email} *</label><input type="email" id="email" name={f.email} autoComplete="email" placeholder={f.emailPh} required /></div></div>
+    <div className="form-two"><div className="field"><label htmlFor="phone">{f.phone}</label><input type="tel" id="phone" name={f.phone} autoComplete="tel" placeholder="+33 …" /></div><div className="field"><label htmlFor="country">{f.country} *</label><select id="country" name={f.country} defaultValue={investment ? f.countries[1] : ''} required><option value="" disabled>{f.chooseCountry}</option>{f.countries.map(o => <option key={o}>{o}</option>)}</select></div></div>
+    {investment ? <><div className="form-two"><div className="field"><label htmlFor="budget">{f.budget}</label><input id="budget" name={f.budget} placeholder={f.budgetPh} /></div><div className="field"><label htmlFor="goal">{f.goal}</label><select id="goal" name={f.goal}>{f.goals.map(o => <option key={o}>{o}</option>)}</select></div></div><div className="field"><label htmlFor="zone">{f.zone}</label><select id="zone" name={f.zone}>{f.zones.map(o => <option key={o}>{o}</option>)}</select></div></> : <div className="field"><label htmlFor="need">{f.need}</label><select id="need" name={f.need}>{f.needs.map(o => <option key={o}>{o}</option>)}</select></div>}
+    <div className="field"><label htmlFor="message">{f.project} *</label><textarea id="message" name={f.project} placeholder={f.projectPh} required /></div>
+    <p className="form-consent">{f.consent}</p>
+    <Button type="submit" className="form-submit">{f.submit} <ArrowUpRight /></Button>
+    {prepared && <p role="status" className="form-status">{f.status}</p>}
   </form>;
 }

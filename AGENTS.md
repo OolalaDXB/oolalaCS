@@ -14,3 +14,4 @@
 - Keep editorial motion CSS-only, progressively enhanced with scroll timelines and reduced-motion overrides; content remains visible in unsupported browsers and hydration stays stable.
 - Use an explicitly labeled WhatsApp handoff for initial contact until a hosted lead inbox is configured; this avoids claiming that an unconnected form saved or sent a lead.
 - Store supplied and downloaded media through asset pointers, keeping country service content in a shared browser-safe module; this avoids duplicated assets and divergent country offerings.
+- All pages live under the optional {-$lang} route segment (French unprefixed, /en and /ru prefixed) with copy in src/lib/i18n dictionaries typed from French; this keeps each language indexable and translations in sync.

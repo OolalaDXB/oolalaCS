@@ -1,8 +1,0 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { MapPin, Phone, MessageCircle } from 'lucide-react';
-import { ContactForm } from '@/components/oolala/contact-form';
-import { Eyebrow } from '@/components/oolala/shared';
-import { pageHead, whatsappUrl } from '@/lib/oolala';
-import portrait from '@/assets/darya.png.asset.json';
-export const Route = createFileRoute('/contact')({ head: () => pageHead('Parlons de votre projet', 'Échangez directement avec Darya pour votre société, votre résidence ou votre investissement aux Émirats, en Géorgie et en France.', '/contact'), component: ContactPage });
-function ContactPage() { return <><section className="site-wrap page-intro"><Eyebrow>Un premier échange, une nouvelle perspective</Eyebrow><h1 className="page-title">Parlons de votre projet.</h1><p className="page-lead">Votre activité, votre situation, le pays envisagé. Partagez ce qui compte pour vous, même si votre projet est encore en train de se dessiner.</p></section><div className="site-wrap contact-grid"><div><div className="contact-details"><a className="contact-detail" href="tel:+971506838777"><Phone size={19} /><span><small>Téléphone</small>+971 50 683 8777</span></a><a className="contact-detail" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle size={19} /><span><small>Échanger directement</small>Écrire à Darya sur WhatsApp</span></a><div className="contact-detail"><MapPin size={19} /><span><small>Dubai, Émirats arabes unis</small>The Sustainable City<br />PO 506575, Dubai, UAE</span></div></div><div className="contact-person"><img src={portrait.url} alt="Darya" /><span><strong>Darya, votre interlocutrice</strong><small>Français · English · Русский</small></span></div></div><ContactForm /></div></>; }
