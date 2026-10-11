@@ -35,8 +35,11 @@ Granting access:
 1. Supabase → Authentication → URL configuration: add the site's `/admin` URL
    (Lovable preview and production domain) to the redirect URLs, so the magic
    link comes back to the back office.
-2. Supabase → Authentication → Users → *Invite user* with the person's email
-   (sign-in uses `shouldCreateUser: false`: nobody else can create an account).
+2. Create the person's account, confirmed and without an invitation email (an
+   invitation would redirect to the host's Site URL): Supabase → Authentication
+   → Users → *Add user* → *Create new user*, any password, *Auto Confirm User*.
+   Sign-in uses `shouldCreateUser: false`: nobody else can create an account.
+   Done on 2026-10-12 for darya@oolala.ae and mickael@oolala.ae.
 3. SQL editor:
 
 ```sql
