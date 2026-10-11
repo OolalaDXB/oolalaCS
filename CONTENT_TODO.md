@@ -11,3 +11,6 @@
 - Validate the RAKEZ and Dubai Silicon Oasis comparison and the Emirates FAQ. No prices, visa quotas or tax rates are published: these change often and must be confirmed with RAKEZ and DIEZ before any figure is added.
 - Confirm whether Oolala is an official RAKEZ or DSO partner or agent before claiming it. The page states only that Oolala Next FZ-LLC is registered at RAKEZ.
 - Mainland company setup is mentioned only as guidance in the FAQ, not as an offered service, until confirmed.
+- Validate the three Emirates packages (Indépendant, Start-up, Société établie). No prices are shown and each links to a quote request. Confirm that branch or subsidiary setup and legalisation coordination are offered.
+- Confirm the "existing company takeover" offer (home milestone, Emirates FAQ, contact option): follow-up and coordination of overdue filings with licensed professionals.
+- Accounting subscription, prices, testimonials and partner badges (as on competitor sites) are not published until Oolala confirms the offer and supplies real, consented testimonials.

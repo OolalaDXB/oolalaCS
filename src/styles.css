@@ -290,6 +290,20 @@ button, input, select, textarea { font: inherit; }
 .network-professional h3 { font-size: 21px; font-weight: 500; margin: 20px 0 12px; }
 @media (max-width: 850px) { .network-heading { grid-template-columns: 1fr; gap: 20px; } .bank-network { gap: 25px; } .network-professionals { gap: 25px; } }
 @media (max-width: 600px) { .bank-network, .network-professionals { grid-template-columns: 1fr; gap: 28px; } .bank-network { margin-top: 30px; } .bank-logos { gap: 22px; } .bank-brand { gap: 8px; } .bank-brand span { font-size: 17px; } .bank-logo-premium { width: 125px; } .network-professional { border-top: 1px solid var(--border); padding-top: 24px; } .network-professional h3 { margin-top: 14px; } }
+.milestone-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; margin-top: 40px; }
+.milestone-grid .audience-item h3 { font-size: 22px; }
+.milestone-grid .audience-item p { font-size: 13px; }
+.plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.plan-card { border: 1px solid var(--border); border-radius: 5px; padding: 30px; display: flex; flex-direction: column; }
+.plan-card h3 { font-size: 24px; font-weight: 500; margin: 0 0 10px; }
+.plan-card > p { font-size: 13px; line-height: 1.75; color: var(--muted-foreground); }
+.plan-card ul { list-style: none; padding: 0; margin: 24px 0; flex: 1; }
+.plan-card li { display: flex; gap: 12px; align-items: baseline; margin-bottom: 10px; font-size: 13px; line-height: 1.7; }
+.plan-card li svg { flex-shrink: 0; transform: translateY(3px); }
+.plan-card .text-link { align-self: flex-start; margin-top: 0; }
+@media (max-width: 1100px) { .milestone-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px 50px; } }
+@media (max-width: 850px) { .plan-grid { grid-template-columns: 1fr; gap: 16px; } }
+@media (max-width: 600px) { .milestone-grid { grid-template-columns: 1fr; gap: 30px; } .plan-card { padding: 24px; } }
 .zone-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; }
 .zone-card { border-top: 1px solid var(--border); padding-top: 28px; }
 .zone-place { font-size: 10px; text-transform: uppercase; font-weight: 600; color: var(--muted-foreground); }
@@ -366,16 +380,16 @@ button, input, select, textarea { font: inherit; }
       animation-timeline: view();
       animation-range: entry 0% entry 65%;
     }
-    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .audience-section .country-fact) {
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .plan-card, .audience-section .country-fact) {
       --entrance-start: 0%;
       --entrance-end: 65%;
       animation: editorial-rise linear both;
       animation-timeline: view();
       animation-range: entry var(--entrance-start) entry var(--entrance-end);
     }
-    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .audience-section .country-fact):nth-child(2) { --entrance-start: 12%; --entrance-end: 77%; }
-    :is(.country-card, .process-step, .network-professional, .audience-section .country-fact):nth-child(3) { --entrance-start: 24%; --entrance-end: 89%; }
-    .audience-section .country-fact:nth-child(4) { --entrance-start: 30%; --entrance-end: 95%; }
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .plan-card, .audience-section .country-fact):nth-child(2) { --entrance-start: 12%; --entrance-end: 77%; }
+    :is(.country-card, .audience-item, .process-step, .network-professional, .plan-card, .audience-section .country-fact):nth-child(3) { --entrance-start: 24%; --entrance-end: 89%; }
+    :is(.audience-item, .audience-section .country-fact):nth-child(4) { --entrance-start: 30%; --entrance-end: 95%; }
     .darya-photo { animation: photo-open linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
     .process-step { position: relative; border-top-color: transparent; }
     .process-step::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: var(--foreground); transform-origin: left; animation: line-open linear both; animation-timeline: view(); animation-range: entry 0% entry 90%; }
