@@ -1,7 +1,7 @@
 import { Eyebrow } from './shared';
 import { useT } from '@/lib/i18n';
-import mashreq from '@/assets/mashreq.png.asset.json';
-import rakbank from '@/assets/rakbank.png.asset.json';
+const mashreq = { url: '/images/mashreq.png' };
+const rakbank = { url: '/images/rakbank.png' };
 
 export function UaeBankNetwork() {
   const { t } = useT(); const u = t.uae;

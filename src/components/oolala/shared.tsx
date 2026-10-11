@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
-import portrait from '@/assets/darya.png.asset.json';
+const portrait = { url: '/images/darya.png' };
 
 export function Eyebrow({ children }: { children: React.ReactNode }) { return <div className="eyebrow"><span className="eyebrow-dot" />{children}</div>; }
 export function ContactBand() { const { t, lp } = useT(); return <section className="cta-band"><div className="site-wrap cta-inner"><div><h2>{t.band.title}</h2><p>{t.band.text}</p></div><Button size="lg" asChild><Link to="/{-$lang}/contact" params={lp}>{t.band.cta} <ArrowUpRight /></Link></Button></div></section>; }
