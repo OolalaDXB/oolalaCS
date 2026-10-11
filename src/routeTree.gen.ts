@@ -9,182 +9,225 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as EmiratsRouteImport } from './routes/emirats'
-import { Route as FranceRouteImport } from './routes/france'
-import { Route as GeorgieRouteImport } from './routes/georgie'
-import { Route as GeorgieIndexRouteImport } from './routes/georgie.index'
-import { Route as GeorgieInvestirRouteImport } from './routes/georgie.investir'
+import { Route as Char123LangChar125RouteImport } from './routes/{-$lang}'
+import { Route as Char123LangChar125IndexRouteImport } from './routes/{-$lang}.index'
+import { Route as Char123LangChar125ContactRouteImport } from './routes/{-$lang}.contact'
+import { Route as Char123LangChar125EmiratsRouteImport } from './routes/{-$lang}.emirats'
+import { Route as Char123LangChar125FranceRouteImport } from './routes/{-$lang}.france'
+import { Route as Char123LangChar125GeorgieRouteImport } from './routes/{-$lang}.georgie'
+import { Route as Char123LangChar125GeorgieIndexRouteImport } from './routes/{-$lang}.georgie.index'
+import { Route as Char123LangChar125GeorgieInvestirRouteImport } from './routes/{-$lang}.georgie.investir'
 
-const IndexRoute = IndexRouteImport.update({
+const Char123LangChar125Route = Char123LangChar125RouteImport.update({
+  id: '/{-$lang}',
+  path: '/{-$lang}',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char123LangChar125IndexRoute = Char123LangChar125IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => Char123LangChar125Route,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmiratsRoute = EmiratsRouteImport.update({
-  id: '/emirats',
-  path: '/emirats',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FranceRoute = FranceRouteImport.update({
-  id: '/france',
-  path: '/france',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GeorgieRoute = GeorgieRouteImport.update({
-  id: '/georgie',
-  path: '/georgie',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GeorgieIndexRoute = GeorgieIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => GeorgieRoute,
-} as any)
-const GeorgieInvestirRoute = GeorgieInvestirRouteImport.update({
-  id: '/investir',
-  path: '/investir',
-  getParentRoute: () => GeorgieRoute,
-} as any)
+const Char123LangChar125ContactRoute =
+  Char123LangChar125ContactRouteImport.update({
+    id: '/contact',
+    path: '/contact',
+    getParentRoute: () => Char123LangChar125Route,
+  } as any)
+const Char123LangChar125EmiratsRoute =
+  Char123LangChar125EmiratsRouteImport.update({
+    id: '/emirats',
+    path: '/emirats',
+    getParentRoute: () => Char123LangChar125Route,
+  } as any)
+const Char123LangChar125FranceRoute =
+  Char123LangChar125FranceRouteImport.update({
+    id: '/france',
+    path: '/france',
+    getParentRoute: () => Char123LangChar125Route,
+  } as any)
+const Char123LangChar125GeorgieRoute =
+  Char123LangChar125GeorgieRouteImport.update({
+    id: '/georgie',
+    path: '/georgie',
+    getParentRoute: () => Char123LangChar125Route,
+  } as any)
+const Char123LangChar125GeorgieIndexRoute =
+  Char123LangChar125GeorgieIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LangChar125GeorgieRoute,
+  } as any)
+const Char123LangChar125GeorgieInvestirRoute =
+  Char123LangChar125GeorgieInvestirRouteImport.update({
+    id: '/investir',
+    path: '/investir',
+    getParentRoute: () => Char123LangChar125GeorgieRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/emirats': typeof EmiratsRoute
-  '/france': typeof FranceRoute
-  '/georgie': typeof GeorgieRouteWithChildren
-  '/georgie/investir': typeof GeorgieInvestirRoute
-  '/georgie/': typeof GeorgieIndexRoute
+  '/{-$lang}': typeof Char123LangChar125RouteWithChildren
+  '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
+  '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
+  '/{-$lang}/france': typeof Char123LangChar125FranceRoute
+  '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/georgie/': typeof Char123LangChar125GeorgieIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/emirats': typeof EmiratsRoute
-  '/france': typeof FranceRoute
-  '/georgie/investir': typeof GeorgieInvestirRoute
-  '/georgie': typeof GeorgieIndexRoute
+  '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
+  '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
+  '/{-$lang}/france': typeof Char123LangChar125FranceRoute
+  '/{-$lang}': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/georgie': typeof Char123LangChar125GeorgieIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/emirats': typeof EmiratsRoute
-  '/france': typeof FranceRoute
-  '/georgie': typeof GeorgieRouteWithChildren
-  '/georgie/investir': typeof GeorgieInvestirRoute
-  '/georgie/': typeof GeorgieIndexRoute
+  '/{-$lang}': typeof Char123LangChar125RouteWithChildren
+  '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
+  '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
+  '/{-$lang}/france': typeof Char123LangChar125FranceRoute
+  '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/georgie/': typeof Char123LangChar125GeorgieIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/contact'
-    | '/emirats'
-    | '/france'
-    | '/georgie'
-    | '/georgie/investir'
-    | '/georgie/'
+    | '/{-$lang}'
+    | '/{-$lang}/contact'
+    | '/{-$lang}/emirats'
+    | '/{-$lang}/france'
+    | '/{-$lang}/georgie'
+    | '/{-$lang}/'
+    | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/georgie/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/contact' | '/emirats' | '/france' | '/georgie/investir' | '/georgie'
+    | '/{-$lang}/contact'
+    | '/{-$lang}/emirats'
+    | '/{-$lang}/france'
+    | '/{-$lang}'
+    | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/georgie'
   id:
     | '__root__'
-    | '/'
-    | '/contact'
-    | '/emirats'
-    | '/france'
-    | '/georgie'
-    | '/georgie/investir'
-    | '/georgie/'
+    | '/{-$lang}'
+    | '/{-$lang}/contact'
+    | '/{-$lang}/emirats'
+    | '/{-$lang}/france'
+    | '/{-$lang}/georgie'
+    | '/{-$lang}/'
+    | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/georgie/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ContactRoute: typeof ContactRoute
-  EmiratsRoute: typeof EmiratsRoute
-  FranceRoute: typeof FranceRoute
-  GeorgieRoute: typeof GeorgieRouteWithChildren
+  Char123LangChar125Route: typeof Char123LangChar125RouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/{-$lang}': {
+      id: '/{-$lang}'
+      path: '/{-$lang}'
+      fullPath: '/{-$lang}'
+      preLoaderRoute: typeof Char123LangChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
+    '/{-$lang}/': {
+      id: '/{-$lang}/'
+      path: '/'
+      fullPath: '/{-$lang}/'
+      preLoaderRoute: typeof Char123LangChar125IndexRouteImport
+      parentRoute: typeof Char123LangChar125Route
+    }
+    '/{-$lang}/contact': {
+      id: '/{-$lang}/contact'
       path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$lang}/contact'
+      preLoaderRoute: typeof Char123LangChar125ContactRouteImport
+      parentRoute: typeof Char123LangChar125Route
     }
-    '/emirats': {
-      id: '/emirats'
+    '/{-$lang}/emirats': {
+      id: '/{-$lang}/emirats'
       path: '/emirats'
-      fullPath: '/emirats'
-      preLoaderRoute: typeof EmiratsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$lang}/emirats'
+      preLoaderRoute: typeof Char123LangChar125EmiratsRouteImport
+      parentRoute: typeof Char123LangChar125Route
     }
-    '/france': {
-      id: '/france'
+    '/{-$lang}/france': {
+      id: '/{-$lang}/france'
       path: '/france'
-      fullPath: '/france'
-      preLoaderRoute: typeof FranceRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$lang}/france'
+      preLoaderRoute: typeof Char123LangChar125FranceRouteImport
+      parentRoute: typeof Char123LangChar125Route
     }
-    '/georgie': {
-      id: '/georgie'
+    '/{-$lang}/georgie': {
+      id: '/{-$lang}/georgie'
       path: '/georgie'
-      fullPath: '/georgie'
-      preLoaderRoute: typeof GeorgieRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$lang}/georgie'
+      preLoaderRoute: typeof Char123LangChar125GeorgieRouteImport
+      parentRoute: typeof Char123LangChar125Route
     }
-    '/georgie/': {
-      id: '/georgie/'
+    '/{-$lang}/georgie/': {
+      id: '/{-$lang}/georgie/'
       path: '/'
-      fullPath: '/georgie/'
-      preLoaderRoute: typeof GeorgieIndexRouteImport
-      parentRoute: typeof GeorgieRoute
+      fullPath: '/{-$lang}/georgie/'
+      preLoaderRoute: typeof Char123LangChar125GeorgieIndexRouteImport
+      parentRoute: typeof Char123LangChar125GeorgieRoute
     }
-    '/georgie/investir': {
-      id: '/georgie/investir'
+    '/{-$lang}/georgie/investir': {
+      id: '/{-$lang}/georgie/investir'
       path: '/investir'
-      fullPath: '/georgie/investir'
-      preLoaderRoute: typeof GeorgieInvestirRouteImport
-      parentRoute: typeof GeorgieRoute
+      fullPath: '/{-$lang}/georgie/investir'
+      preLoaderRoute: typeof Char123LangChar125GeorgieInvestirRouteImport
+      parentRoute: typeof Char123LangChar125GeorgieRoute
     }
   }
 }
 
-interface GeorgieRouteChildren {
-  GeorgieInvestirRoute: typeof GeorgieInvestirRoute
-  GeorgieIndexRoute: typeof GeorgieIndexRoute
+interface Char123LangChar125GeorgieRouteChildren {
+  Char123LangChar125GeorgieInvestirRoute: typeof Char123LangChar125GeorgieInvestirRoute
+  Char123LangChar125GeorgieIndexRoute: typeof Char123LangChar125GeorgieIndexRoute
 }
 
-const GeorgieRouteChildren: GeorgieRouteChildren = {
-  GeorgieInvestirRoute: GeorgieInvestirRoute,
-  GeorgieIndexRoute: GeorgieIndexRoute,
+const Char123LangChar125GeorgieRouteChildren: Char123LangChar125GeorgieRouteChildren =
+  {
+    Char123LangChar125GeorgieInvestirRoute:
+      Char123LangChar125GeorgieInvestirRoute,
+    Char123LangChar125GeorgieIndexRoute: Char123LangChar125GeorgieIndexRoute,
+  }
+
+const Char123LangChar125GeorgieRouteWithChildren =
+  Char123LangChar125GeorgieRoute._addFileChildren(
+    Char123LangChar125GeorgieRouteChildren,
+  )
+
+interface Char123LangChar125RouteChildren {
+  Char123LangChar125ContactRoute: typeof Char123LangChar125ContactRoute
+  Char123LangChar125EmiratsRoute: typeof Char123LangChar125EmiratsRoute
+  Char123LangChar125FranceRoute: typeof Char123LangChar125FranceRoute
+  Char123LangChar125GeorgieRoute: typeof Char123LangChar125GeorgieRouteWithChildren
+  Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
 }
 
-const GeorgieRouteWithChildren =
-  GeorgieRoute._addFileChildren(GeorgieRouteChildren)
+const Char123LangChar125RouteChildren: Char123LangChar125RouteChildren = {
+  Char123LangChar125ContactRoute: Char123LangChar125ContactRoute,
+  Char123LangChar125EmiratsRoute: Char123LangChar125EmiratsRoute,
+  Char123LangChar125FranceRoute: Char123LangChar125FranceRoute,
+  Char123LangChar125GeorgieRoute: Char123LangChar125GeorgieRouteWithChildren,
+  Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
+}
+
+const Char123LangChar125RouteWithChildren =
+  Char123LangChar125Route._addFileChildren(Char123LangChar125RouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ContactRoute: ContactRoute,
-  EmiratsRoute: EmiratsRoute,
-  FranceRoute: FranceRoute,
-  GeorgieRoute: GeorgieRouteWithChildren,
+  Char123LangChar125Route: Char123LangChar125RouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

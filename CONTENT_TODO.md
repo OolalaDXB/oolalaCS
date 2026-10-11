@@ -17,3 +17,5 @@
 - Accounting: decided, no dedicated page. Bookkeeping and filings are entrusted to licensed partner firms; the site says so in the Emirates accounting service.
 - Testimonials: the section is built and hidden while `testimonials` in `src/lib/oolala.ts` is empty. Add real quotes, with the client's written consent, as `{ quote, name, context, country }`; they then appear on the home page and on the matching country page.
 - Validate the visa content for the three countries: Golden Visa (10 years), freelance permit, family sponsorship conditions, Georgia visa-free stay of up to one year, Passeport Talent and Carte entrepreneur. No salary, investment or fee threshold is published.
+- English and Russian versions of the RAKEZ / DSO, packages, visas, FAQ and milestone content were translated from the French: have them reviewed by a native speaker before publication.
+- Russian pages fall back to a system font: DM Sans and the loaded Cormorant Garamond subset do not cover Cyrillic. Choose a Cyrillic-capable pairing (for example Manrope or Inter for text, Cormorant Garamond with the cyrillic subset for the signature).
