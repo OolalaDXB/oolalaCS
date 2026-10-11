@@ -12,6 +12,7 @@ once it has run in production here.
 | Schema `beau_solo` (tables) + API functions `public.solo_*` | `sql/0001_p1_core.sql`, applied to Supabase project `ejulkzxohloxfvpbnyyw` |
 | Oolala starting data (types, office, hours) | `hosts/oolala/seed.sql` |
 | Public Edge Function `solo-public` | `functions/solo-public/index.ts` |
+| Notification sender `solo-outbox` (Resend, pg_cron every minute) | `functions/solo-outbox/index.ts`, `sql/0002_outbox_sender.sql` |
 | Booking page and contact form | `src/routes/{-$lang}.rendez-vous.tsx`, `src/components/oolala/contact-form.tsx` |
 | Back office | `src/routes/admin.tsx`, `src/components/solo-admin/` (mobile first: today, diary, days off, hours, blocks, enquiries, clients, places, appointment types) |
 
@@ -60,15 +61,29 @@ update beau_solo.settings set notify_email = '<email>' where id;
 ```bash
 # throwaway local Postgres 16
 psql -v ON_ERROR_STOP=1 -f sql/tests/supabase_stub.sql -f sql/0001_p1_core.sql -f sql/tests/p1_contract.sql
-# → SOLO_P1 ok=47
+# → SOLO_P1 ok=47, then sql/0002_outbox_sender.sql + sql/tests/p2_outbox.sql → SOLO_P2 ok=9
+node --experimental-strip-types functions/tests/solo-public.test.mjs   # SOLO_PUBLIC ok=12
+node --experimental-strip-types functions/tests/solo-outbox.test.mjs   # SOLO_OUTBOX ok=10
 ```
 
 The suite runs in one transaction and rolls back. It covers availability,
 buffers, blocks, open windows, double booking, the manage link, CRM matching,
 staff bookings at a partner's address and every access boundary.
 
+## Emails
+
+Bookings, cancellations and enquiries queue messages in `beau_solo.outbox`.
+`solo-outbox` sends them through Resend from `darya@oolala.ae` (Resend domain
+oolala.ae, verified), clients in their language, staff in French, and reports
+each result back (5 attempts, a 10-minute claim so a message never goes twice).
+It does nothing until the secret `RESEND_API_KEY` is set (Supabase → Edge
+Functions → Secrets). Optional: `SOLO_MAIL_FROM`, `SOLO_REPLY_TO`, `SOLO_SITE_URL`.
+
+Back-office sign-in links are sent by Supabase Auth itself: they need the same
+Resend key as custom SMTP (Authentication → Emails → SMTP: smtp.resend.com,
+port 465, user `resend`).
+
 ## Not in P1
 
-Payments and invoices (BEAU PH, FactureX), sending the queued notifications
-(`beau_solo.outbox` fills up; a sender needs a verified email domain),
-calendar sync, reminders.
+Payments and invoices (BEAU PH, FactureX), calendar sync, reminders,
+presence periods per city (Dubai / Vannes).
