@@ -311,9 +311,16 @@ button, input, select, textarea { font: inherit; }
 .skip-link:focus { left: 10px; }
 .reveal { animation: reveal .65s ease-out both; }
 @keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.section-space, .cta-band, .page-intro, .investment-network { transition: opacity .8s ease, transform .8s ease; }
-.zone-reveal { opacity: 0; transform: translateY(24px); }
-.zone-reveal.is-revealed { opacity: 1; transform: translateY(0); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section-space, .cta-band, .investment-network {
+      animation: zone-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+@keyframes zone-in { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
 @media (min-width: 1600px) { .home-hero { height: 760px; } }
 @media (max-width: 1100px) { .site-wrap { width: calc(100% - 64px); } .desktop-nav { gap: 18px; } .brand-logo { height: 62px; } .header-actions { gap: 12px; } .locale-label { display: none; } .header-cta { padding-inline: 13px; } .hero-heading { font-size: 66px; } .hero-content { padding-top: 65px; } .darya-grid { gap: 55px; } .contact-grid { gap: 45px; } }
 @media (max-width: 850px) { .desktop-nav, .header-actions .header-cta { display: none; } .mobile-toggle { display: inline-flex; } .site-header { height: 80px; } .mobile-nav { top: 80px; } .brand-logo { height: 54px; } .hero-heading { font-size: 58px; } .hero-destinations { gap: 14px; } .hero-note { display: none; } .hero-bottom { justify-content: flex-end; } .intro-strip { flex-direction: column; align-items: flex-start; justify-content: center; padding-block: 22px; gap: 15px; } .intro-services { gap: 22px; } .section-space { padding-block: 65px; } .section-title { font-size: 35px; } .section-heading { align-items: flex-start; flex-direction: column; gap: 18px; } .section-description { max-width: 550px; } .country-grid { gap: 14px; } .country-card-info { padding: 17px; } .country-card h3 { font-size: 19px; } .country-card-tags { gap: 5px; } .audience-grid { gap: 35px; } .darya-grid { gap: 40px; } .cta-inner { align-items: flex-start; flex-direction: column; } .country-hero-grid { grid-template-columns: 1fr; } .country-main-photo { min-height: 0; height: 370px; } .country-fact { gap: 24px; } .contact-grid { grid-template-columns: 1fr; gap: 55px; } .page-title { font-size: 48px; } }
