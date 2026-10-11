@@ -20,7 +20,8 @@
 - English and Russian versions of the RAKEZ / DSO, packages, visas, FAQ and milestone content were translated from the French: have them reviewed by a native speaker before publication.
 - Russian pages fall back to a system font: DM Sans and the loaded Cormorant Garamond subset do not cover Cyrillic. Choose a Cyrillic-capable pairing (for example Manrope or Inter for text, Cormorant Garamond with the cyrillic subset for the signature).
 - Online booking (/rendez-vous) and the contact form now save to the BEAU Solo back office. Confirmation emails are queued but not sent until an email sender (domain + API key) is configured: until then Darya sends the video link herself, as the confirmation page says.
-- Confirm the office address used for "Rendez-vous au bureau" (The Sustainable City, PO 506575) and the placeholder hours (Monday–Friday, 09:00–18:00 Dubai).
+- No fixed office: in-person meetings are "Rendez-vous à Dubai" and "Rendez-vous à Vannes", confirmed by Darya, who sets the exact place on each one. Placeholder hours are Monday–Friday, 09:00–18:00 in the agenda's timezone (Asia/Dubai): switch it to Europe/Paris in Réglages when working from Vannes.
+- The contact page still shows "The Sustainable City, PO 506575": confirm it should stay public now that there is no fixed office.
 - Add a privacy notice page: the site now stores enquiries and bookings.
 ## Offre en trois piliers (Société, Installation, Investissement)
 - Investissement Émirats et France : seule une présentation sobre est publiée. À confirmer : zones ciblées, types de biens, intervenants partenaires (agents, notaires, conseils), gestion locative éventuelle.

@@ -357,6 +357,8 @@ button, input, select, textarea { font: inherit; }
 .type-description { font-size: 13px; line-height: 1.7; color: var(--muted-foreground); }
 .type-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted-foreground); flex-wrap: wrap; }
 .type-meta svg { flex-shrink: 0; }
+.type-option .type-meta, .booking-summary .type-meta { flex-wrap: nowrap; align-items: flex-start; }
+.type-option .type-meta svg, .booking-summary .type-meta svg { margin-top: 2px; }
 .booking-range { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 .day-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
 .day-chip { flex: 0 0 auto; min-width: 66px; border: 1px solid var(--border); border-radius: 5px; padding: 10px 8px; display: grid; gap: 2px; justify-items: center; background: var(--background); cursor: pointer; }

@@ -4,11 +4,9 @@
 -- Business timezone and slot grid
 update beau_solo.settings set timezone = 'Asia/Dubai', slot_step_min = 30 where id;
 
--- The office address published on the contact page (to confirm)
-insert into beau_solo.locations (id, name, kind, address, city, country, client_note)
-values ('6f1d7c2e-0b1a-4c3e-9a51-0000000000a1', 'Oolala · The Sustainable City', 'office', 'The Sustainable City, PO 506575', 'Dubai', 'UAE',
-        'Merci de vous présenter à l’accueil quelques minutes avant l’heure du rendez-vous.')
-on conflict (id) do nothing;
+-- No fixed office: Darya meets clients in Dubai or in Vannes, at a place set
+-- for each meeting (location_policy = to_define). The former office type and
+-- place stay in the database, switched off.
 
 -- Appointment types. Physical meetings at a partner, a property or elsewhere
 -- carry their place and address per booking (location_policy = to_define) and
@@ -23,10 +21,14 @@ values
    '{"fr":"Consultation approfondie","en":"In-depth consultation","ru":"Подробная консультация"}',
    '{"fr":"Une heure pour étudier votre situation en détail et bâtir votre plan d’action.","en":"One hour to review your situation in detail and build your action plan.","ru":"Час на детальный разбор вашей ситуации и составление плана действий."}',
    'video', 'fixed', null, 60, 15, 24, 0, true, false, 20),
-  ('rdv-bureau',
-   '{"fr":"Rendez-vous au bureau","en":"Meeting at the office","ru":"Встреча в офисе"}',
-   '{"fr":"Un rendez-vous en personne à Dubai.","en":"An in-person meeting in Dubai.","ru":"Личная встреча в Дубае."}',
-   'in_person', 'fixed', '6f1d7c2e-0b1a-4c3e-9a51-0000000000a1', 60, 30, 24, 0, true, true, 30),
+  ('rdv-dubai',
+   '{"fr":"Rendez-vous à Dubai","en":"Meeting in Dubai","ru":"Встреча в Дубае"}',
+   '{"fr":"Un rendez-vous en personne à Dubai. Le lieu exact vous est précisé à la confirmation.","en":"An in-person meeting in Dubai. The exact place is given when the meeting is confirmed.","ru":"Личная встреча в Дубае. Точное место сообщается при подтверждении."}',
+   'in_person', 'to_define', null, 60, 30, 24, 0, true, true, 30),
+  ('rdv-vannes',
+   '{"fr":"Rendez-vous à Vannes","en":"Meeting in Vannes","ru":"Встреча в Ванне"}',
+   '{"fr":"Un rendez-vous en personne à Vannes, en Bretagne. Le lieu exact vous est précisé à la confirmation.","en":"An in-person meeting in Vannes, Brittany. The exact place is given when the meeting is confirmed.","ru":"Личная встреча в Ванне (Бретань). Точное место сообщается при подтверждении."}',
+   'in_person', 'to_define', null, 60, 30, 24, 0, true, true, 35),
   ('rdv-partenaire',
    '{"fr":"Rendez-vous chez un partenaire","en":"Meeting at a partner’s office","ru":"Встреча у партнёра"}',
    '{"fr":"Avocat, notaire, banque ou free zone : le lieu et l’adresse sont précisés pour chaque rendez-vous.","en":"Lawyer, notary, bank or free zone: the place and address are set for each meeting.","ru":"Юрист, нотариус, банк или фризона: место и адрес указываются для каждой встречи."}',
@@ -46,6 +48,9 @@ insert into beau_solo.availability_rules (weekday, start_time, end_time)
 select d, '09:00', '18:00' from generate_series(1, 5) d
 on conflict (weekday, start_time) do nothing;
 
--- Staff access is granted once the person's sign-in email is known, e.g.:
--- insert into beau_solo.staff (email, name, permissions) values ('<email>', 'Darya', array['solo:admin']);
--- update beau_solo.settings set notify_email = '<email>' where id;
+-- Staff (they also need a Supabase Auth account: Authentication → Users → Invite)
+insert into beau_solo.staff (email, name, permissions) values
+  ('darya@oolala.ae', 'Darya', array['solo:admin']),
+  ('mickael@oolala.ae', 'Mickaël', array['solo:admin'])
+on conflict (email) do update set active = true, permissions = excluded.permissions;
+update beau_solo.settings set notify_email = 'darya@oolala.ae' where id;
