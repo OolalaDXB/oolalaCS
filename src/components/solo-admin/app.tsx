@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { CalendarDays, Inbox, LogOut, Plus, Settings2, Sun, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import logo from '@/assets/oolala-cs-horizontal-dark.svg.asset.json';
+const logo = { url: '/images/oolala-cs-horizontal-dark.svg' };
 import { adminRpc, can, type Booking, type Overview, type Staff } from '@/lib/solo-admin';
 import { BookingCard, BookingEditor, type EditorSeed } from './booking-editor';
 import { Agenda } from './agenda';

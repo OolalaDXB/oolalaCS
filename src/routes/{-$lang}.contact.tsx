@@ -4,7 +4,7 @@ import { ContactForm } from '@/components/oolala/contact-form';
 import { Eyebrow } from '@/components/oolala/shared';
 import { whatsappUrl } from '@/lib/oolala';
 import { localeHead, useT } from '@/lib/i18n';
-import portrait from '@/assets/darya.png.asset.json';
+const portrait = { url: '/images/darya.png' };
 export const Route = createFileRoute('/{-$lang}/contact')({ head: ({ params }) => localeHead(params.lang, 'contact', '/contact'), component: ContactPage });
 function ContactPage() {
   const { t, lp } = useT(); const c = t.contact;

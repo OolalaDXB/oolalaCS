@@ -1,3 +1,4 @@
+import { offerEn } from './offer-en';
 import type { Dict } from './fr';
 
 export const en: Dict = {
@@ -118,4 +119,5 @@ export const en: Dict = {
   manage: { eyebrow: 'Oolala · Appointment', missing: 'This link is incomplete or no longer valid.', statusLabel: 'Status', status: { pending: 'Awaiting confirmation', confirmed: 'Confirmed', cancelled: 'Cancelled', completed: 'Completed', no_show: 'Missed' }, when: 'Date and time', cancel: 'Cancel the appointment', cancelReason: 'Reason (optional)', cancelConfirm: 'Confirm cancellation', keep: 'Keep the appointment', cancelled: 'Your appointment is cancelled.', rebook: 'Book a new appointment', map: 'View on the map', join: 'Join the video call' },
   testimonials: { eyebrow: 'They trusted us', title: 'In their words.' },
   notFound: { title: 'Page not found', text: 'This page does not exist or has been moved.', home: 'Back to home' },
+  offer: offerEn,
 };

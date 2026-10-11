@@ -1,3 +1,4 @@
+import { offerFr } from './offer-fr';
 export const fr = {
   locale: 'fr',
   meta: {
@@ -116,6 +117,7 @@ export const fr = {
   manage: { eyebrow: 'Oolala · Rendez-vous', missing: 'Ce lien est incomplet ou n’est plus valide.', statusLabel: 'Statut', status: { pending: 'En attente de confirmation', confirmed: 'Confirmé', cancelled: 'Annulé', completed: 'Terminé', no_show: 'Absent' }, when: 'Date et heure', cancel: 'Annuler le rendez-vous', cancelReason: 'Motif (facultatif)', cancelConfirm: 'Confirmer l’annulation', keep: 'Garder le rendez-vous', cancelled: 'Votre rendez-vous est annulé.', rebook: 'Prendre un nouveau rendez-vous', map: 'Voir sur la carte', join: 'Rejoindre la visio' },
   testimonials: { eyebrow: 'Ils nous ont fait confiance', title: 'Leurs mots, leur projet.' },
   notFound: { title: 'Page introuvable', text: 'Cette page n’existe pas ou a été déplacée.', home: 'Retour à l’accueil' },
+  offer: offerFr,
 };
 
 type Widen<T> = T extends string ? string : T extends readonly (infer U)[] ? Widen<U>[] : T extends object ? { [K in keyof T]: Widen<T[K]> } : T;

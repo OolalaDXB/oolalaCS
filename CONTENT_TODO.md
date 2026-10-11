@@ -13,7 +13,7 @@
 - Mainland company setup is mentioned only as guidance in the FAQ, not as an offered service, until confirmed.
 - Emirates entry price published: from USD 2,500 for a free zone company without a visa (Indépendant package, also in the FAQ). Other packages read "Sur devis". Confirmed: government fees are included, and the price rises with the free zone, activities and options.
 - Validate the three Emirates packages (Indépendant, Start-up, Société établie). Each links to a quote request. Confirm that branch or subsidiary setup and legalisation coordination are offered.
-- Confirm the "existing company takeover" offer (home milestone, Emirates FAQ, contact option): follow-up and coordination of overdue filings with licensed professionals.
+- Confirm the "existing company takeover" offer (Emirates FAQ, contact option): follow-up and coordination of overdue filings with licensed professionals.
 - Accounting: decided, no dedicated page. Bookkeeping and filings are entrusted to licensed partner firms; the site says so in the Emirates accounting service.
 - Testimonials: the section is built and hidden while `testimonials` in `src/lib/oolala.ts` is empty. Add real quotes, with the client's written consent, as `{ quote, name, context, country }`; they then appear on the home page and on the matching country page.
 - Validate the visa content for the three countries: Golden Visa (10 years), freelance permit, family sponsorship conditions, Georgia visa-free stay of up to one year, Passeport Talent and Carte entrepreneur. No salary, investment or fee threshold is published.
@@ -22,3 +22,9 @@
 - Online booking (/rendez-vous) and the contact form now save to the BEAU Solo back office. Confirmation emails are queued but not sent until an email sender (domain + API key) is configured: until then Darya sends the video link herself, as the confirmation page says.
 - Confirm the office address used for "Rendez-vous au bureau" (The Sustainable City, PO 506575) and the placeholder hours (Monday–Friday, 09:00–18:00 Dubai).
 - Add a privacy notice page: the site now stores enquiries and bookings.
+## Offre en trois piliers (Société, Installation, Investissement)
+- Investissement Émirats et France : seule une présentation sobre est publiée. À confirmer : zones ciblées, types de biens, intervenants partenaires (agents, notaires, conseils), gestion locative éventuelle.
+- France, Installation : confirmer si un accompagnement bancaire personnel est proposé (non affiché pour l’instant).
+- Émirats et France, Société : confirmer les modifications de société proposées en France (non affichées) et la liste exacte des free zones à citer.
+- Géorgie, Installation : confirmer l’accompagnement familial (scolarité, logement) avant de le détailler.
+- Relecture par Darya des nouveaux textes EN et RU des trois piliers.

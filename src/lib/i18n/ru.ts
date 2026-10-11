@@ -1,3 +1,4 @@
+import { offerRu } from './offer-ru';
 import type { Dict } from './fr';
 
 export const ru: Dict = {
@@ -118,4 +119,5 @@ export const ru: Dict = {
   manage: { eyebrow: 'Oolala · Встреча', missing: 'Ссылка неполная или больше не действует.', statusLabel: 'Статус', status: { pending: 'Ожидает подтверждения', confirmed: 'Подтверждена', cancelled: 'Отменена', completed: 'Состоялась', no_show: 'Неявка' }, when: 'Дата и время', cancel: 'Отменить встречу', cancelReason: 'Причина (необязательно)', cancelConfirm: 'Подтвердить отмену', keep: 'Оставить встречу', cancelled: 'Ваша встреча отменена.', rebook: 'Записаться снова', map: 'Открыть карту', join: 'Подключиться к видеозвонку' },
   testimonials: { eyebrow: 'Нам доверяют', title: 'Их слова, их проекты.' },
   notFound: { title: 'Страница не найдена', text: 'Эта страница не существует или была перемещена.', home: 'На главную' },
+  offer: offerRu,
 };

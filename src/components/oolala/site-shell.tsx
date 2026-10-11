@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, Globe2, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logo from '@/assets/oolala-cs-horizontal-dark.svg.asset.json';
+const logo = { url: '/images/oolala-cs-horizontal-dark.svg' };
 import { whatsappUrl } from '@/lib/oolala';
 import { langLabels, langParam, langs, useT } from '@/lib/i18n';
 

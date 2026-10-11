@@ -1,29 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, Check, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { type CountryKey } from '@/lib/oolala';
+import { type CountryKey, pillarSlugs } from '@/lib/oolala';
 import { useT } from '@/lib/i18n';
 import { ContactBand, DaryaSection, Eyebrow, Testimonials } from './shared';
 import { UaeBankNetwork } from './uae-network';
-import dubai from '@/assets/dubai.jpg.asset.json';
-import tbilisi from '@/assets/tbilisi.jpg.asset.json';
-import paris from '@/assets/paris.jpg.asset.json';
+const photos = { emirats: { url: '/images/dubai.jpg' }, georgie: { url: '/images/tbilisi.jpg' }, france: { url: '/images/paris.jpg' } };
 
-const photos = { emirats: dubai, georgie: tbilisi, france: paris };
 export function CountryPage({ country }: { country: CountryKey }) {
-  const { t, lp } = useT(); const c = t.country;
+  const { t, lp } = useT(); const c = t.country; const o = t.offer; const L = o.labels;
   const data = t.countries[country];
-  const [audience, setAudience] = useState<'business' | 'personal'>('business');
-  const services = audience === 'business' ? data.services : data.services.filter(service => (service as { personal?: boolean }).personal);
-  return <><section className="page-intro site-wrap reveal"><Eyebrow>Oolala · {data.city}</Eyebrow><h1 className="page-title">{data.title}</h1><p className="page-lead">{data.intro}</p></section><div className="site-wrap country-hero-grid"><img className="country-main-photo" src={photos[country].url} alt={`${c.photoAlt} ${data.city}`} /><div className="country-facts"><div className="country-fact"><strong>{data.city}</strong><span>{c.factCity}</span></div>{data.tags.map((tag, i) => <div className="country-fact" key={tag}><strong>{tag}</strong><span>{c.facts[i]}</span></div>)}</div></div><section className="site-wrap section-space"><div className="section-heading"><div><Eyebrow>{c.servicesEyebrow}</Eyebrow><h2 className="section-title">{c.servicesTitle}</h2></div></div><div role="tablist" aria-label={c.profile} className="service-tabs"><Button id="tab-business" role="tab" aria-selected={audience === 'business'} aria-controls="services" variant={audience === 'business' ? 'default' : 'ghost'} onClick={() => setAudience('business')}>{c.business}</Button><Button id="tab-personal" role="tab" aria-selected={audience === 'personal'} aria-controls="services" variant={audience === 'personal' ? 'default' : 'ghost'} onClick={() => setAudience('personal')}>{c.personal}</Button></div><div id="services" role="tabpanel" aria-labelledby={`tab-${audience}`}>
-    {country === 'georgie' && audience === 'personal' && <InvestmentTeaser />}
-    {audience === 'personal' && country !== 'france' && <article className="service-row"><div><h3>{c.bankTitle}</h3><p>{c.bankDesc}</p></div><div><p>{c.bankText}</p></div></article>}
-    {services.map(service => <article className="service-row" key={service.title}><div><h3>{service.title}</h3><p>{service.description}</p></div><div><ul>{service.items.map(item => <li key={item}><Check size={15} /><span>{item}</span></li>)}</ul><div className="outcome"><strong>{c.outcome}</strong>{service.outcome}</div></div></article>)}
-    {audience === 'personal' && <article className="service-row"><div><h3>{c.installTitle}</h3><p>{c.installDesc}</p></div><div><p>{c.installText}</p><Link className="text-link" to="/{-$lang}/contact" params={lp}>{c.installCta} <ArrowUpRight size={15} /></Link></div></article>}
-    </div>{country === 'georgie' && <InvestmentTeaser />}</section>{'plans' in data && <CountryPlans plans={data.plans} />}<CountryVisas visas={data.visas} />{'zones' in data && <FreeZones zones={data.zones} />}{country === 'emirats' && <UaeBankNetwork />}<Testimonials country={country} />{'faq' in data && <CountryFaq faq={data.faq} />}<DaryaSection /><ContactBand /></>;
+  const [tab, setTab] = useState(0);
+  useEffect(() => {
+    const sync = () => { const i = pillarSlugs.indexOf(window.location.hash.slice(1) as (typeof pillarSlugs)[number]); if (i >= 0) { setTab(i); document.getElementById('services')?.scrollIntoView(); } };
+    sync(); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync);
+  }, []);
+  const select = (i: number) => { setTab(i); history.replaceState(null, '', `#${pillarSlugs[i]}`); };
+  const p = o.countries[country].pillars[tab] ?? o.countries[country].pillars[0]!;
+  const list = (items: string[]) => <ul>{items.map(item => <li key={item}><Check size={15} /><span>{item}</span></li>)}</ul>;
+  return <><section className="page-intro site-wrap reveal"><Eyebrow>Oolala · {data.city}</Eyebrow><h1 className="page-title">{data.title}</h1><p className="page-lead">{data.intro}</p></section>
+    <div className="site-wrap country-hero-grid"><img className="country-main-photo" src={photos[country].url} alt={`${c.photoAlt} ${data.city}`} /><div className="country-facts">{o.tabs.map((label, i) => <a href={`#${pillarSlugs[i]}`} className="country-fact" key={label}><strong>{label}</strong><span>{o.countries[country].cards[i]}</span></a>)}</div></div>
+    <section id="services" className="site-wrap section-space"><div className="section-heading"><div><Eyebrow>{c.servicesEyebrow}</Eyebrow><h2 className="section-title">{c.servicesTitle}</h2></div></div>
+      <div role="tablist" aria-label={L.tablist} className="service-tabs">{o.tabs.map((label, i) => <Button key={label} id={`tab-${pillarSlugs[i]}`} role="tab" aria-selected={tab === i} aria-controls="pillar-panel" variant={tab === i ? 'default' : 'ghost'} onClick={() => select(i)}>{label}</Button>)}</div>
+      <div id="pillar-panel" role="tabpanel" aria-labelledby={`tab-${pillarSlugs[tab]}`} key={tab}>
+        <article className="service-row"><div><h3>{o.tabs[tab]}</h3><p>{p.intro}</p></div><div><strong className="pillar-label">{L.audience}</strong><p>{p.audience}</p></div></article>
+        {p.blocks.map(block => <article className="service-row" key={block.title}><div><span className="pillar-label">{L.handled}</span><h3>{block.title}</h3></div><div>{list(block.items)}</div></article>)}
+        <article className="service-row"><div><h3>{L.partners}</h3></div><div>{list(p.partners)}</div></article>
+        <article className="service-row"><div><h3>{L.deliverables}</h3></div><div>{list(p.deliverables)}<div className="outcome"><strong>{L.next}</strong>{p.next}</div>
+          {country === 'georgie' && tab === 2
+            ? <Button asChild><Link to="/{-$lang}/georgie/investir" params={lp}>{L.investLink} <ArrowUpRight /></Link></Button>
+            : <Link className="text-link" to="/{-$lang}/contact" params={lp}>{L.start} <ArrowUpRight size={15} /></Link>}
+        </div></article>
+      </div>
+    </section>{'plans' in data && <CountryPlans plans={data.plans} />}<CountryVisas visas={data.visas} />{'zones' in data && <FreeZones zones={data.zones} />}{country === 'emirats' && <UaeBankNetwork />}<Testimonials country={country} />{'faq' in data && <CountryFaq faq={data.faq} />}<DaryaSection /><ContactBand /></>;
 }
-function InvestmentTeaser() { const { t, lp } = useT(); const c = t.country; return <aside className="investment-teaser"><div><h3>{c.teaserTitle}</h3><p>{c.teaserText}</p></div><Button asChild><Link to="/{-$lang}/georgie/investir" params={lp}>{c.discover} <ArrowUpRight /></Link></Button></aside>; }
 type Plan = { name: string; lead: string; price: string; priceNote: string; items: string[] };
 type Visas = { intro: string; types: { name: string; audience: string; text: string }[]; steps?: string[] };
 type FreeZone = { name: string; place: string; lead: string; text: string; points: string[]; fit: string };
