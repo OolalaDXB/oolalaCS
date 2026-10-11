@@ -10,33 +10,106 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EmiratsRouteImport } from './routes/emirats'
+import { Route as FranceRouteImport } from './routes/france'
+import { Route as GeorgieRouteImport } from './routes/georgie'
+import { Route as GeorgieIndexRouteImport } from './routes/georgie.index'
+import { Route as GeorgieInvestirRouteImport } from './routes/georgie.investir'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmiratsRoute = EmiratsRouteImport.update({
+  id: '/emirats',
+  path: '/emirats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranceRoute = FranceRouteImport.update({
+  id: '/france',
+  path: '/france',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeorgieRoute = GeorgieRouteImport.update({
+  id: '/georgie',
+  path: '/georgie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeorgieIndexRoute = GeorgieIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GeorgieRoute,
+} as any)
+const GeorgieInvestirRoute = GeorgieInvestirRouteImport.update({
+  id: '/investir',
+  path: '/investir',
+  getParentRoute: () => GeorgieRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/emirats': typeof EmiratsRoute
+  '/france': typeof FranceRoute
+  '/georgie': typeof GeorgieRouteWithChildren
+  '/georgie/investir': typeof GeorgieInvestirRoute
+  '/georgie/': typeof GeorgieIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/emirats': typeof EmiratsRoute
+  '/france': typeof FranceRoute
+  '/georgie/investir': typeof GeorgieInvestirRoute
+  '/georgie': typeof GeorgieIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/emirats': typeof EmiratsRoute
+  '/france': typeof FranceRoute
+  '/georgie': typeof GeorgieRouteWithChildren
+  '/georgie/investir': typeof GeorgieInvestirRoute
+  '/georgie/': typeof GeorgieIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/contact'
+    | '/emirats'
+    | '/france'
+    | '/georgie'
+    | '/georgie/investir'
+    | '/georgie/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    '/' | '/contact' | '/emirats' | '/france' | '/georgie/investir' | '/georgie'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/emirats'
+    | '/france'
+    | '/georgie'
+    | '/georgie/investir'
+    | '/georgie/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  EmiratsRoute: typeof EmiratsRoute
+  FranceRoute: typeof FranceRoute
+  GeorgieRoute: typeof GeorgieRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +121,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/emirats': {
+      id: '/emirats'
+      path: '/emirats'
+      fullPath: '/emirats'
+      preLoaderRoute: typeof EmiratsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/france': {
+      id: '/france'
+      path: '/france'
+      fullPath: '/france'
+      preLoaderRoute: typeof FranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/georgie': {
+      id: '/georgie'
+      path: '/georgie'
+      fullPath: '/georgie'
+      preLoaderRoute: typeof GeorgieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/georgie/': {
+      id: '/georgie/'
+      path: '/'
+      fullPath: '/georgie/'
+      preLoaderRoute: typeof GeorgieIndexRouteImport
+      parentRoute: typeof GeorgieRoute
+    }
+    '/georgie/investir': {
+      id: '/georgie/investir'
+      path: '/investir'
+      fullPath: '/georgie/investir'
+      preLoaderRoute: typeof GeorgieInvestirRouteImport
+      parentRoute: typeof GeorgieRoute
+    }
   }
 }
 
+interface GeorgieRouteChildren {
+  GeorgieInvestirRoute: typeof GeorgieInvestirRoute
+  GeorgieIndexRoute: typeof GeorgieIndexRoute
+}
+
+const GeorgieRouteChildren: GeorgieRouteChildren = {
+  GeorgieInvestirRoute: GeorgieInvestirRoute,
+  GeorgieIndexRoute: GeorgieIndexRoute,
+}
+
+const GeorgieRouteWithChildren =
+  GeorgieRoute._addFileChildren(GeorgieRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
+  EmiratsRoute: EmiratsRoute,
+  FranceRoute: FranceRoute,
+  GeorgieRoute: GeorgieRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

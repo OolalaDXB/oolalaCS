@@ -14,4 +14,14 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+  it.each([
+    ['/emirats', '/emirats'],
+    ['/georgie', '/georgie/'],
+    ['/france', '/france'],
+    ['/georgie/investir', '/georgie/investir'],
+    ['/contact', '/contact'],
+  ])('matches the requested Oolala page at %s', (path, routeId) => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes(path).at(-1)?.routeId).toBe(routeId);
+  });
 });
