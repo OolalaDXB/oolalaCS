@@ -13,7 +13,7 @@ once it has run in production here.
 | Oolala starting data (types, office, hours) | `hosts/oolala/seed.sql` |
 | Public Edge Function `solo-public` | `functions/solo-public/index.ts` |
 | Booking page and contact form | `src/routes/{-$lang}.rendez-vous.tsx`, `src/components/oolala/contact-form.tsx` |
-| Back office | `src/routes/admin.tsx` |
+| Back office | `src/routes/admin.tsx`, `src/components/solo-admin/` (mobile first: today, diary, days off, hours, blocks, enquiries, clients, places, appointment types) |
 
 The version ledger is `beau_solo.schema_versions`, separate from the host's.
 
@@ -30,8 +30,14 @@ The version ledger is `beau_solo.schema_versions`, separate from the host's.
   `solo:settings` (types, places), `solo:admin` (all).
 - A signed-in account that is not staff reads nothing (tested).
 
-Granting access (Supabase SQL editor, after inviting the person under
-Authentication → Users):
+Granting access:
+
+1. Supabase → Authentication → URL configuration: add the site's `/admin` URL
+   (Lovable preview and production domain) to the redirect URLs, so the magic
+   link comes back to the back office.
+2. Supabase → Authentication → Users → *Invite user* with the person's email
+   (sign-in uses `shouldCreateUser: false`: nobody else can create an account).
+3. SQL editor:
 
 ```sql
 insert into beau_solo.staff (email, name, permissions) values ('<email>', 'Darya', array['solo:admin']);

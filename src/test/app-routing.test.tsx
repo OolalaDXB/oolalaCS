@@ -26,6 +26,7 @@ describe("App routing", () => {
     ['/ru/contact', '/{-$lang}/contact'],
     ['/rendez-vous', '/{-$lang}/rendez-vous/'],
     ['/en/rendez-vous/gerer', '/{-$lang}/rendez-vous/gerer'],
+    ['/admin', '/admin'],
   ])('matches the requested Oolala page at %s', (path, routeId) => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes(path).at(-1)?.routeId).toBe(routeId);

@@ -119,13 +119,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // The back office has its own shell; the public header and footer stay off it.
+  const isAdmin = useRouterState({ select: (state) => state.location.pathname.startsWith("/admin") });
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <SiteHeader />
+      {!isAdmin && <SiteHeader />}
       <main id="main"><Outlet /></main>
-      <SiteFooter />
+      {!isAdmin && <SiteFooter />}
     </QueryClientProvider>
   );
 }

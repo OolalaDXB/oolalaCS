@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as Char123LangChar125RouteImport } from './routes/{-$lang}'
 import { Route as Char123LangChar125IndexRouteImport } from './routes/{-$lang}.index'
 import { Route as Char123LangChar125ContactRouteImport } from './routes/{-$lang}.contact'
@@ -21,6 +22,11 @@ import { Route as Char123LangChar125GeorgieInvestirRouteImport } from './routes/
 import { Route as Char123LangChar125RendezVousIndexRouteImport } from './routes/{-$lang}.rendez-vous.index'
 import { Route as Char123LangChar125RendezVousGererRouteImport } from './routes/{-$lang}.rendez-vous.gerer'
 
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char123LangChar125Route = Char123LangChar125RouteImport.update({
   id: '/{-$lang}',
   path: '/{-$lang}',
@@ -87,6 +93,7 @@ const Char123LangChar125RendezVousGererRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/admin': typeof AdminRoute
   '/{-$lang}': typeof Char123LangChar125RouteWithChildren
   '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/{-$lang}/rendez-vous/': typeof Char123LangChar125RendezVousIndexRoute
 }
 export interface FileRoutesByTo {
+  '/admin': typeof AdminRoute
   '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
@@ -111,6 +119,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/admin': typeof AdminRoute
   '/{-$lang}': typeof Char123LangChar125RouteWithChildren
   '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
@@ -126,6 +135,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/admin'
     | '/{-$lang}'
     | '/{-$lang}/contact'
     | '/{-$lang}/emirats'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/rendez-vous/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/admin'
     | '/{-$lang}/contact'
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/rendez-vous'
   id:
     | '__root__'
+    | '/admin'
     | '/{-$lang}'
     | '/{-$lang}/contact'
     | '/{-$lang}/emirats'
@@ -163,11 +175,19 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AdminRoute: typeof AdminRoute
   Char123LangChar125Route: typeof Char123LangChar125RouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/{-$lang}': {
       id: '/{-$lang}'
       path: '/{-$lang}'
@@ -306,6 +326,7 @@ const Char123LangChar125RouteWithChildren =
   Char123LangChar125Route._addFileChildren(Char123LangChar125RouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  AdminRoute: AdminRoute,
   Char123LangChar125Route: Char123LangChar125RouteWithChildren,
 }
 export const routeTree = rootRouteImport
