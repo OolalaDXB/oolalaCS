@@ -273,6 +273,22 @@ button, input, select, textarea { font: inherit; }
 .investment-zone { border-bottom: 1px solid var(--border); padding-block: 25px; }
 .investment-zone h3 { margin: 0 0 12px; font-size: 24px; font-weight: 500; }
 .investment-zone p { font-size: 14px; color: var(--muted-foreground); line-height: 1.8; }
+.investment-network { background: var(--muted); border-block: 1px solid var(--border); }
+.network-heading { display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; align-items: end; }
+.network-heading .section-description { max-width: 470px; }
+.bank-network { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 48px; }
+.bank-contact { border-block: 1px solid var(--border); padding-block: 30px; }
+.bank-logos { display: flex; align-items: center; gap: 30px; min-height: 70px; flex-wrap: wrap; }
+.bank-logo { width: 190px; height: 52px; object-fit: contain; object-position: left center; }
+.bank-logo-premium { width: 140px; }
+.bank-contact h3 { font-size: 18px; font-weight: 500; margin: 22px 0 8px; }
+.bank-contact p, .network-professional p { font-size: 13px; color: var(--muted-foreground); line-height: 1.85; }
+.network-caveat { font-size: 11px; color: var(--muted-foreground); line-height: 1.8; margin-top: 20px; max-width: 900px; }
+.network-professionals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 50px; }
+.network-professional svg { width: 24px; height: 24px; stroke-width: 1.4; }
+.network-professional h3 { font-size: 21px; font-weight: 500; margin: 20px 0 12px; }
+@media (max-width: 850px) { .network-heading { grid-template-columns: 1fr; gap: 20px; } .bank-network { gap: 25px; } .network-professionals { gap: 25px; } }
+@media (max-width: 600px) { .bank-network, .network-professionals { grid-template-columns: 1fr; gap: 28px; } .bank-network { margin-top: 30px; } .bank-logos { gap: 22px; } .bank-logo { width: 165px; height: 48px; } .bank-logo-premium { width: 110px; } .network-professional { border-top: 1px solid var(--border); padding-top: 24px; } .network-professional h3 { margin-top: 14px; } }
 .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 90px; padding-bottom: 85px; }
 .contact-details { display: grid; gap: 22px; padding-top: 25px; }
 .contact-detail { display: flex; gap: 14px; align-items: flex-start; font-size: 14px; line-height: 1.8; }
