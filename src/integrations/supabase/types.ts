@@ -648,6 +648,21 @@ export type Database = {
         Args: { p_amount: number; p_from: string; p_on?: string; p_to: string }
         Returns: number
       }
+      solo_public_book: { Args: { p: Json }; Returns: Json }
+      solo_public_booking: {
+        Args: { p_ref: string; p_token: string }
+        Returns: Json
+      }
+      solo_public_cancel: {
+        Args: { p_reason?: string; p_ref: string; p_token: string }
+        Returns: Json
+      }
+      solo_public_enquiry: { Args: { p: Json }; Returns: Json }
+      solo_public_slots: {
+        Args: { p_from: string; p_to: string; p_type: string }
+        Returns: Json
+      }
+      solo_public_types: { Args: { p_lang?: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
