@@ -12,6 +12,6 @@
 - Keep TanStack Start file-based routes with a shared root header/footer and separate content leaves; this preserves the platform runtime and independently shareable pages.
 - Define all visual roles and layouts in the global semantic design system; this keeps Oolala consistent across every page.
 - Keep editorial motion CSS-only, progressively enhanced with scroll timelines and reduced-motion overrides; content remains visible in unsupported browsers and hydration stays stable.
-- Use an explicitly labeled WhatsApp handoff for initial contact until a hosted lead inbox is configured; this avoids claiming that an unconnected form saved or sent a lead.
+- Save contact enquiries and bookings through the BEAU Solo endpoint (`beau-solo/`, Supabase function `solo-public`) and keep an explicitly labeled WhatsApp option beside them; the form only says a message was sent when the endpoint confirmed it.
 - Store supplied and downloaded media through asset pointers, keeping country service content in a shared browser-safe module; this avoids duplicated assets and divergent country offerings.
 - All pages live under the optional {-$lang} route segment (French unprefixed, /en and /ru prefixed) with copy in src/lib/i18n dictionaries typed from French; this keeps each language indexable and translations in sync.

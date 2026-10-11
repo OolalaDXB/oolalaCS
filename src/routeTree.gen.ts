@@ -15,8 +15,11 @@ import { Route as Char123LangChar125ContactRouteImport } from './routes/{-$lang}
 import { Route as Char123LangChar125EmiratsRouteImport } from './routes/{-$lang}.emirats'
 import { Route as Char123LangChar125FranceRouteImport } from './routes/{-$lang}.france'
 import { Route as Char123LangChar125GeorgieRouteImport } from './routes/{-$lang}.georgie'
+import { Route as Char123LangChar125RendezVousRouteImport } from './routes/{-$lang}.rendez-vous'
 import { Route as Char123LangChar125GeorgieIndexRouteImport } from './routes/{-$lang}.georgie.index'
 import { Route as Char123LangChar125GeorgieInvestirRouteImport } from './routes/{-$lang}.georgie.investir'
+import { Route as Char123LangChar125RendezVousIndexRouteImport } from './routes/{-$lang}.rendez-vous.index'
+import { Route as Char123LangChar125RendezVousGererRouteImport } from './routes/{-$lang}.rendez-vous.gerer'
 
 const Char123LangChar125Route = Char123LangChar125RouteImport.update({
   id: '/{-$lang}',
@@ -52,6 +55,12 @@ const Char123LangChar125GeorgieRoute =
     path: '/georgie',
     getParentRoute: () => Char123LangChar125Route,
   } as any)
+const Char123LangChar125RendezVousRoute =
+  Char123LangChar125RendezVousRouteImport.update({
+    id: '/rendez-vous',
+    path: '/rendez-vous',
+    getParentRoute: () => Char123LangChar125Route,
+  } as any)
 const Char123LangChar125GeorgieIndexRoute =
   Char123LangChar125GeorgieIndexRouteImport.update({
     id: '/',
@@ -64,6 +73,18 @@ const Char123LangChar125GeorgieInvestirRoute =
     path: '/investir',
     getParentRoute: () => Char123LangChar125GeorgieRoute,
   } as any)
+const Char123LangChar125RendezVousIndexRoute =
+  Char123LangChar125RendezVousIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LangChar125RendezVousRoute,
+  } as any)
+const Char123LangChar125RendezVousGererRoute =
+  Char123LangChar125RendezVousGererRouteImport.update({
+    id: '/gerer',
+    path: '/gerer',
+    getParentRoute: () => Char123LangChar125RendezVousRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/{-$lang}': typeof Char123LangChar125RouteWithChildren
@@ -71,9 +92,12 @@ export interface FileRoutesByFullPath {
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
   '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/rendez-vous': typeof Char123LangChar125RendezVousRouteWithChildren
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/rendez-vous/gerer': typeof Char123LangChar125RendezVousGererRoute
   '/{-$lang}/georgie/': typeof Char123LangChar125GeorgieIndexRoute
+  '/{-$lang}/rendez-vous/': typeof Char123LangChar125RendezVousIndexRoute
 }
 export interface FileRoutesByTo {
   '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
@@ -81,7 +105,9 @@ export interface FileRoutesByTo {
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
   '/{-$lang}': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/rendez-vous/gerer': typeof Char123LangChar125RendezVousGererRoute
   '/{-$lang}/georgie': typeof Char123LangChar125GeorgieIndexRoute
+  '/{-$lang}/rendez-vous': typeof Char123LangChar125RendezVousIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -90,9 +116,12 @@ export interface FileRoutesById {
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
   '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/rendez-vous': typeof Char123LangChar125RendezVousRouteWithChildren
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
+  '/{-$lang}/rendez-vous/gerer': typeof Char123LangChar125RendezVousGererRoute
   '/{-$lang}/georgie/': typeof Char123LangChar125GeorgieIndexRoute
+  '/{-$lang}/rendez-vous/': typeof Char123LangChar125RendezVousIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -102,9 +131,12 @@ export interface FileRouteTypes {
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
     | '/{-$lang}/georgie'
+    | '/{-$lang}/rendez-vous'
     | '/{-$lang}/'
     | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/rendez-vous/gerer'
     | '/{-$lang}/georgie/'
+    | '/{-$lang}/rendez-vous/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$lang}/contact'
@@ -112,7 +144,9 @@ export interface FileRouteTypes {
     | '/{-$lang}/france'
     | '/{-$lang}'
     | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/rendez-vous/gerer'
     | '/{-$lang}/georgie'
+    | '/{-$lang}/rendez-vous'
   id:
     | '__root__'
     | '/{-$lang}'
@@ -120,9 +154,12 @@ export interface FileRouteTypes {
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
     | '/{-$lang}/georgie'
+    | '/{-$lang}/rendez-vous'
     | '/{-$lang}/'
     | '/{-$lang}/georgie/investir'
+    | '/{-$lang}/rendez-vous/gerer'
     | '/{-$lang}/georgie/'
+    | '/{-$lang}/rendez-vous/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -173,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LangChar125GeorgieRouteImport
       parentRoute: typeof Char123LangChar125Route
     }
+    '/{-$lang}/rendez-vous': {
+      id: '/{-$lang}/rendez-vous'
+      path: '/rendez-vous'
+      fullPath: '/{-$lang}/rendez-vous'
+      preLoaderRoute: typeof Char123LangChar125RendezVousRouteImport
+      parentRoute: typeof Char123LangChar125Route
+    }
     '/{-$lang}/georgie/': {
       id: '/{-$lang}/georgie/'
       path: '/'
@@ -186,6 +230,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/{-$lang}/georgie/investir'
       preLoaderRoute: typeof Char123LangChar125GeorgieInvestirRouteImport
       parentRoute: typeof Char123LangChar125GeorgieRoute
+    }
+    '/{-$lang}/rendez-vous/': {
+      id: '/{-$lang}/rendez-vous/'
+      path: '/'
+      fullPath: '/{-$lang}/rendez-vous/'
+      preLoaderRoute: typeof Char123LangChar125RendezVousIndexRouteImport
+      parentRoute: typeof Char123LangChar125RendezVousRoute
+    }
+    '/{-$lang}/rendez-vous/gerer': {
+      id: '/{-$lang}/rendez-vous/gerer'
+      path: '/gerer'
+      fullPath: '/{-$lang}/rendez-vous/gerer'
+      preLoaderRoute: typeof Char123LangChar125RendezVousGererRouteImport
+      parentRoute: typeof Char123LangChar125RendezVousRoute
     }
   }
 }
@@ -207,11 +265,30 @@ const Char123LangChar125GeorgieRouteWithChildren =
     Char123LangChar125GeorgieRouteChildren,
   )
 
+interface Char123LangChar125RendezVousRouteChildren {
+  Char123LangChar125RendezVousGererRoute: typeof Char123LangChar125RendezVousGererRoute
+  Char123LangChar125RendezVousIndexRoute: typeof Char123LangChar125RendezVousIndexRoute
+}
+
+const Char123LangChar125RendezVousRouteChildren: Char123LangChar125RendezVousRouteChildren =
+  {
+    Char123LangChar125RendezVousGererRoute:
+      Char123LangChar125RendezVousGererRoute,
+    Char123LangChar125RendezVousIndexRoute:
+      Char123LangChar125RendezVousIndexRoute,
+  }
+
+const Char123LangChar125RendezVousRouteWithChildren =
+  Char123LangChar125RendezVousRoute._addFileChildren(
+    Char123LangChar125RendezVousRouteChildren,
+  )
+
 interface Char123LangChar125RouteChildren {
   Char123LangChar125ContactRoute: typeof Char123LangChar125ContactRoute
   Char123LangChar125EmiratsRoute: typeof Char123LangChar125EmiratsRoute
   Char123LangChar125FranceRoute: typeof Char123LangChar125FranceRoute
   Char123LangChar125GeorgieRoute: typeof Char123LangChar125GeorgieRouteWithChildren
+  Char123LangChar125RendezVousRoute: typeof Char123LangChar125RendezVousRouteWithChildren
   Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
 }
 
@@ -220,6 +297,8 @@ const Char123LangChar125RouteChildren: Char123LangChar125RouteChildren = {
   Char123LangChar125EmiratsRoute: Char123LangChar125EmiratsRoute,
   Char123LangChar125FranceRoute: Char123LangChar125FranceRoute,
   Char123LangChar125GeorgieRoute: Char123LangChar125GeorgieRouteWithChildren,
+  Char123LangChar125RendezVousRoute:
+    Char123LangChar125RendezVousRouteWithChildren,
   Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
 }
 

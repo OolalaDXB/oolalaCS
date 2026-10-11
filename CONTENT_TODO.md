@@ -19,3 +19,6 @@
 - Validate the visa content for the three countries: Golden Visa (10 years), freelance permit, family sponsorship conditions, Georgia visa-free stay of up to one year, Passeport Talent and Carte entrepreneur. No salary, investment or fee threshold is published.
 - English and Russian versions of the RAKEZ / DSO, packages, visas, FAQ and milestone content were translated from the French: have them reviewed by a native speaker before publication.
 - Russian pages fall back to a system font: DM Sans and the loaded Cormorant Garamond subset do not cover Cyrillic. Choose a Cyrillic-capable pairing (for example Manrope or Inter for text, Cormorant Garamond with the cyrillic subset for the signature).
+- Online booking (/rendez-vous) and the contact form now save to the BEAU Solo back office. Confirmation emails are queued but not sent until an email sender (domain + API key) is configured: until then Darya sends the video link herself, as the confirmation page says.
+- Confirm the office address used for "Rendez-vous au bureau" (The Sustainable City, PO 506575) and the placeholder hours (Monday–Friday, 09:00–18:00 Dubai).
+- Add a privacy notice page: the site now stores enquiries and bookings.

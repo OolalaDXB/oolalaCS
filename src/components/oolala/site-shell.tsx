@@ -6,7 +6,7 @@ import logo from '@/assets/oolala-cs-horizontal-dark.svg.asset.json';
 import { whatsappUrl } from '@/lib/oolala';
 import { langLabels, langParam, langs, useT } from '@/lib/i18n';
 
-const navigation = [{ to: '/{-$lang}/emirats', key: 'emirats' }, { to: '/{-$lang}/georgie', key: 'georgie' }, { to: '/{-$lang}/france', key: 'france' }, { to: '/{-$lang}/georgie/investir', key: 'invest' }] as const;
+const navigation = [{ to: '/{-$lang}/emirats', key: 'emirats' }, { to: '/{-$lang}/georgie', key: 'georgie' }, { to: '/{-$lang}/france', key: 'france' }, { to: '/{-$lang}/georgie/investir', key: 'invest' }, { to: '/{-$lang}/rendez-vous', key: 'booking' }] as const;
 
 function LanguageSwitcher({ onPick }: { onPick?: () => void }) {
   const { t, lang } = useT();
