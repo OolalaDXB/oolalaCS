@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -114,8 +115,43 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function useZoneReveal(pathname: string) {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const zones = Array.from(
+      document.querySelectorAll<HTMLElement>(".section-space, .cta-band, .page-intro, .investment-network"),
+    );
+    if (zones.length === 0) return;
+    const pending: HTMLElement[] = [];
+    for (const zone of zones) {
+      if (zone.getBoundingClientRect().top < window.innerHeight - 60) {
+        zone.classList.add("is-revealed");
+      } else {
+        zone.classList.add("zone-reveal");
+        pending.push(zone);
+      }
+    }
+    if (pending.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    pending.forEach((zone) => observer.observe(zone));
+    return () => observer.disconnect();
+  }, [pathname]);
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  useZoneReveal(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
