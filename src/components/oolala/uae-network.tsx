@@ -1,4 +1,5 @@
 import { pageHead } from '@/lib/oolala';
+
 import mashreq from '@/assets/mashreq.png.asset.json';
 import rakbank from '@/assets/rakbank.png.asset.json';
 
