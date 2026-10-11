@@ -214,7 +214,7 @@ button, input, select, textarea { font: inherit; }
 .country-card p { font-size: 12px; color: var(--muted-foreground); margin: 10px 0 21px; }
 .country-card-tags { display: flex; gap: 8px; flex-wrap: wrap; font-size: 9px; color: var(--muted-foreground); }
 .country-card-tags span { padding: 5px 8px; background: var(--muted); border-radius: 3px; }
-.audience-section { background: var(--secondary); }
+.audience-section { border-top: 1px solid var(--border); }
 .audience-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; margin-top: 40px; }
 .audience-item { border-top: 1px solid var(--border); padding-top: 28px; }
 .audience-item h3 { margin: 16px 0 12px; font-size: 24px; font-weight: 500; }
@@ -225,13 +225,13 @@ button, input, select, textarea { font: inherit; }
 .step-number { font-size: 12px; color: var(--muted-foreground); }
 .process-step h3 { font-size: 22px; font-weight: 500; margin: 30px 0 13px; }
 .process-step p { font-size: 13px; color: var(--muted-foreground); line-height: 1.8; }
-.darya-section { background: var(--secondary); }
+.darya-section { border-top: 1px solid var(--border); }
 .darya-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 100px; align-items: center; }
 .darya-photo { width: 100%; aspect-ratio: 4 / 4.5; object-fit: cover; object-position: center 28%; border-radius: 5px; }
 .darya-copy p { font-size: 14px; line-height: 1.9; color: var(--muted-foreground); margin-top: 22px; max-width: 510px; }
 .darya-copy .signature { font-family: var(--font-serif); font-size: 36px; color: var(--foreground); margin-top: 24px; font-style: italic; }
 .darya-role { display: block; color: var(--muted-foreground); font-size: 10px; margin-bottom: 28px; }
-.cta-band { background: var(--primary); color: var(--primary-foreground); padding-block: 64px; }
+.cta-band { border-top: 1px solid var(--border); padding-block: 64px; }
 .cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; }
 .cta-band h2 { font-size: 35px; font-weight: 500; margin: 0 0 12px; }
 .cta-band p { font-size: 13px; opacity: .75; }
@@ -249,8 +249,7 @@ button, input, select, textarea { font: inherit; }
 .country-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .country-main-photo { width: 100%; height: 100%; min-height: 390px; object-fit: cover; border-radius: 5px; }
 .country-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.country-fact { padding: 26px; border: 1px solid var(--border); border-radius: 5px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; background: var(--secondary); }
-.country-fact:first-child { background: var(--primary); color: var(--primary-foreground); }
+.country-fact { padding: 26px; border: 1px solid var(--border); border-radius: 5px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
 .country-fact strong { font-size: 22px; font-weight: 500; }
 .country-fact span { font-size: 12px; line-height: 1.7; }
 .service-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 15px; }
@@ -261,9 +260,9 @@ button, input, select, textarea { font: inherit; }
 .service-row ul { list-style: none; padding: 0; margin: 0 0 20px; }
 .service-row li { display: flex; gap: 12px; align-items: baseline; margin-bottom: 10px; }
 .service-row li svg { flex-shrink: 0; transform: translateY(3px); }
-.outcome { padding: 17px; background: var(--muted); border-radius: 4px; font-size: 12px; line-height: 1.7; }
+.outcome { padding: 17px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; line-height: 1.7; }
 .outcome strong { display: block; font-size: 9px; text-transform: uppercase; margin-bottom: 5px; }
-.investment-teaser { background: var(--secondary); padding: 45px; display: flex; align-items: center; justify-content: space-between; gap: 25px; margin-top: 35px; }
+.investment-teaser { border: 1px solid var(--border); border-radius: 5px; padding: 45px; display: flex; align-items: center; justify-content: space-between; gap: 25px; margin-top: 35px; }
 .investment-teaser h3 { font-size: 26px; font-weight: 500; margin: 0 0 15px; }
 .investment-teaser p { color: var(--muted-foreground); font-size: 13px; line-height: 1.8; max-width: 630px; }
 .investment-layout { display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; align-items: start; }
@@ -273,7 +272,7 @@ button, input, select, textarea { font: inherit; }
 .investment-zone { border-bottom: 1px solid var(--border); padding-block: 25px; }
 .investment-zone h3 { margin: 0 0 12px; font-size: 24px; font-weight: 500; }
 .investment-zone p { font-size: 14px; color: var(--muted-foreground); line-height: 1.8; }
-.investment-network { background: var(--muted); border-block: 1px solid var(--border); }
+.investment-network { border-block: 1px solid var(--border); }
 .network-heading { display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; align-items: end; }
 .network-heading .section-description { max-width: 470px; }
 .bank-network { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 48px; }
@@ -312,6 +311,9 @@ button, input, select, textarea { font: inherit; }
 .skip-link:focus { left: 10px; }
 .reveal { animation: reveal .65s ease-out both; }
 @keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.section-space, .cta-band, .page-intro, .investment-network { transition: opacity .8s ease, transform .8s ease; }
+.zone-reveal { opacity: 0; transform: translateY(24px); }
+.zone-reveal.is-revealed { opacity: 1; transform: translateY(0); }
 @media (min-width: 1600px) { .home-hero { height: 760px; } }
 @media (max-width: 1100px) { .site-wrap { width: calc(100% - 64px); } .desktop-nav { gap: 18px; } .brand-logo { height: 62px; } .header-actions { gap: 12px; } .locale-label { display: none; } .header-cta { padding-inline: 13px; } .hero-heading { font-size: 66px; } .hero-content { padding-top: 65px; } .darya-grid { gap: 55px; } .contact-grid { gap: 45px; } }
 @media (max-width: 850px) { .desktop-nav, .header-actions .header-cta { display: none; } .mobile-toggle { display: inline-flex; } .site-header { height: 80px; } .mobile-nav { top: 80px; } .brand-logo { height: 54px; } .hero-heading { font-size: 58px; } .hero-destinations { gap: 14px; } .hero-note { display: none; } .hero-bottom { justify-content: flex-end; } .intro-strip { flex-direction: column; align-items: flex-start; justify-content: center; padding-block: 22px; gap: 15px; } .intro-services { gap: 22px; } .section-space { padding-block: 65px; } .section-title { font-size: 35px; } .section-heading { align-items: flex-start; flex-direction: column; gap: 18px; } .section-description { max-width: 550px; } .country-grid { gap: 14px; } .country-card-info { padding: 17px; } .country-card h3 { font-size: 19px; } .country-card-tags { gap: 5px; } .audience-grid { gap: 35px; } .darya-grid { gap: 40px; } .cta-inner { align-items: flex-start; flex-direction: column; } .country-hero-grid { grid-template-columns: 1fr; } .country-main-photo { min-height: 0; height: 370px; } .country-fact { gap: 24px; } .contact-grid { grid-template-columns: 1fr; gap: 55px; } .page-title { font-size: 48px; } }
