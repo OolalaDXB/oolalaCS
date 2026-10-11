@@ -290,6 +290,25 @@ button, input, select, textarea { font: inherit; }
 .network-professional h3 { font-size: 21px; font-weight: 500; margin: 20px 0 12px; }
 @media (max-width: 850px) { .network-heading { grid-template-columns: 1fr; gap: 20px; } .bank-network { gap: 25px; } .network-professionals { gap: 25px; } }
 @media (max-width: 600px) { .bank-network, .network-professionals { grid-template-columns: 1fr; gap: 28px; } .bank-network { margin-top: 30px; } .bank-logos { gap: 22px; } .bank-brand { gap: 8px; } .bank-brand span { font-size: 17px; } .bank-logo-premium { width: 125px; } .network-professional { border-top: 1px solid var(--border); padding-top: 24px; } .network-professional h3 { margin-top: 14px; } }
+.zone-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; }
+.zone-card { border-top: 1px solid var(--border); padding-top: 28px; }
+.zone-place { font-size: 10px; text-transform: uppercase; font-weight: 600; color: var(--muted-foreground); }
+.zone-card h3 { font-size: 30px; font-weight: 500; margin: 12px 0 8px; }
+.zone-card p { font-size: 14px; line-height: 1.85; color: var(--muted-foreground); margin-top: 10px; }
+.zone-card .zone-lead { font-size: 16px; color: var(--foreground); }
+.zone-card ul { list-style: none; padding: 0; margin: 22px 0; }
+.zone-card li { display: flex; gap: 12px; align-items: baseline; margin-bottom: 10px; font-size: 14px; line-height: 1.75; }
+.zone-card li svg { flex-shrink: 0; transform: translateY(3px); }
+.faq-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; align-items: start; border-top: 1px solid var(--border); }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-item summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 24px; font-size: 18px; font-weight: 500; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary svg { flex-shrink: 0; }
+.faq-item[open] summary svg { rotate: 45deg; }
+.faq-item p { padding-bottom: 26px; max-width: 640px; font-size: 14px; line-height: 1.85; color: var(--muted-foreground); }
+@media (max-width: 850px) { .faq-layout { grid-template-columns: 1fr; gap: 30px; } .zone-grid { gap: 30px; } }
+@media (max-width: 600px) { .zone-grid { grid-template-columns: 1fr; gap: 35px; } .zone-card h3 { font-size: 26px; } .faq-item summary { font-size: 16px; padding-block: 20px; } }
 .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 90px; padding-bottom: 85px; }
 .contact-details { display: grid; gap: 22px; padding-top: 25px; }
 .contact-detail { display: flex; gap: 14px; align-items: flex-start; font-size: 14px; line-height: 1.8; }
@@ -340,20 +359,21 @@ button, input, select, textarea { font: inherit; }
   .country-fact { transition: translate .35s ease, border-color .35s ease; }
   .country-fact:hover { translate: 0 -3px; border-color: var(--foreground); }
   .service-tabs [aria-selected='true'] { animation: editorial-rise .3s ease both; }
+  .faq-item summary svg { transition: rotate .3s cubic-bezier(.22, 1, .36, 1); }
   @supports (animation-timeline: view()) {
-    :is(.section-heading, .network-heading, .audience-section .section-title, .service-row, .investment-zone, .investment-summary, .darya-copy, .cta-inner > *, .contact-grid > *, .investment-teaser) {
+    :is(.section-heading, .network-heading, .audience-section .section-title, .service-row, .faq-layout > *, .investment-zone, .investment-summary, .darya-copy, .cta-inner > *, .contact-grid > *, .investment-teaser) {
       animation: editorial-rise linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 65%;
     }
-    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .audience-section .country-fact) {
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .audience-section .country-fact) {
       --entrance-start: 0%;
       --entrance-end: 65%;
       animation: editorial-rise linear both;
       animation-timeline: view();
       animation-range: entry var(--entrance-start) entry var(--entrance-end);
     }
-    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .audience-section .country-fact):nth-child(2) { --entrance-start: 12%; --entrance-end: 77%; }
+    :is(.country-card, .audience-item, .process-step, .bank-contact, .network-professional, .zone-card, .audience-section .country-fact):nth-child(2) { --entrance-start: 12%; --entrance-end: 77%; }
     :is(.country-card, .process-step, .network-professional, .audience-section .country-fact):nth-child(3) { --entrance-start: 24%; --entrance-end: 89%; }
     .audience-section .country-fact:nth-child(4) { --entrance-start: 30%; --entrance-end: 95%; }
     .darya-photo { animation: photo-open linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }

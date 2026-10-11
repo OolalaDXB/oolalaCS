@@ -8,3 +8,6 @@
 - Confirm the Georgian invoicing entity, additional legacy services, and production domain before publication. No unconfirmed entity or additional service is displayed.
 - Validate adapted affirmative homepage headlines and Darya introduction against the supplied brief.
 - Residency and financial figures that require publication-date verification are intentionally omitted.
+- Validate the RAKEZ and Dubai Silicon Oasis comparison and the Emirates FAQ. No prices, visa quotas or tax rates are published: these change often and must be confirmed with RAKEZ and DIEZ before any figure is added.
+- Confirm whether Oolala is an official RAKEZ or DSO partner or agent before claiming it. The page states only that Oolala Next FZ-LLC is registered at RAKEZ.
+- Mainland company setup is mentioned only as guidance in the FAQ, not as an offered service, until confirmed.

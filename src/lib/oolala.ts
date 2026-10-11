@@ -1,15 +1,29 @@
 export type CountryKey = 'emirats' | 'georgie' | 'france';
 export type Service = { title: string; description: string; items: string[]; outcome: string };
-export const countries: Record<CountryKey, { name: string; city: string; label: string; intro: string; tags: string[]; services: Service[] }> = {
+export type FreeZone = { name: string; place: string; lead: string; text: string; points: string[]; fit: string };
+export type Faq = { question: string; answer: string };
+export const countries: Record<CountryKey, { name: string; city: string; label: string; intro: string; tags: string[]; services: Service[]; zones?: FreeZone[]; faq?: Faq[] }> = {
   emirats: {
     name: 'Émirats arabes unis', city: 'Dubai', label: 'Un nouvel élan pour votre activité.',
-    intro: 'Créez et développez votre société en free zone. Installez-vous aux Émirats avec un accompagnement personnel, du premier échange au suivi de vos obligations.',
-    tags: ['Free zones', 'Banque & résidence', 'Suivi annuel'],
+    intro: 'Créez votre société en free zone, à RAKEZ, à Dubai Silicon Oasis ou dans la zone la plus adaptée à votre activité. Licence, banque, visas et suivi : un accompagnement personnel, du premier échange au renouvellement.',
+    tags: ['RAKEZ & DSO', 'Banque & résidence', 'Suivi annuel'],
     services: [
-      { title: 'Création de société', description: 'La bonne structure commence par la compréhension de votre activité.', items: ['Choix de la free zone et de la licence : RAKEZ, Meydan, DMCC et autres', 'Statuts, structure des associés et dépôt du dossier', 'Licence et certificat de constitution'], outcome: 'Une société et sa licence en free zone, prêtes à exercer.' },
+      { title: 'Création de société', description: 'La bonne structure commence par la compréhension de votre activité.', items: ['Choix de la free zone et de la licence : RAKEZ, Dubai Silicon Oasis, Meydan, DMCC et autres', 'Statuts, structure des associés et dépôt du dossier', 'Licence et certificat de constitution'], outcome: 'Une société et sa licence en free zone, prêtes à exercer.' },
       { title: 'Banque & domiciliation', description: 'Une adresse officielle et un dossier bancaire complet pour démarrer.', items: ['Bureau, flexi-desk ou adresse adaptée à votre zone', 'Préparation et suivi du dossier bancaire'], outcome: 'Une adresse officielle et un dossier bancaire déposé. Ouverture soumise à la décision de la banque.' },
       { title: 'Visas & résidence', description: 'Un accompagnement pour les fondateurs, les équipes et les familles.', items: ['Visas investisseur, partenaire, employés et dépendants', 'Examen médical et Emirates ID', 'Renouvellements et annulations'], outcome: 'Des dossiers de visa et d’Emirates ID préparés et suivis, sous réserve de la décision des autorités.' },
       { title: 'Comptabilité & suivi', description: 'Les obligations de votre entreprise, suivies année après année.', items: ['Enregistrement à l’impôt sur les sociétés et à la TVA', 'Suivi des déclarations et renouvellement de licence', 'Changement d’associés, modification, transfert ou liquidation'], outcome: 'Un calendrier administratif clair et une société suivie dans la durée.' },
+    ],
+    zones: [
+      { name: 'RAKEZ', place: 'Ras Al Khaimah Economic Zone', lead: 'La free zone que nous avons choisie pour nous-mêmes.', text: 'Oolala Next FZ-LLC est immatriculée à RAKEZ. Nous connaissons son parcours de l’intérieur : dossier, licence, visas et renouvellement.', points: ['Un large choix d’activités : services, conseil, commerce, e-commerce et industrie', 'Des formules flexibles, du flexi-desk au bureau ou à l’entrepôt', 'Une création qui se prépare en grande partie à distance', 'Des visas de résidence valables dans tous les Émirats, y compris pour vivre à Dubai'], fit: 'Consultants, indépendants, sociétés de services et de commerce qui veulent une structure solide avec un budget maîtrisé.' },
+      { name: 'Dubai Silicon Oasis', place: 'DSO · Dubai', lead: 'Le pôle technologique de Dubai.', text: 'Free zone et parc technologique intégré, Dubai Silicon Oasis réunit bureaux, campus pour start-up et quartier résidentiel. Une adresse à Dubai, au cœur d’un écosystème tech.', points: ['Une licence et une adresse à Dubai', 'Un environnement tourné vers la tech, le logiciel et l’innovation', 'Dtec, le campus dédié aux start-up et aux entrepreneurs', 'Bureaux, flexi-desks et logements réunis sur un même site'], fit: 'Start-up, sociétés tech et logiciel, fondateurs qui souhaitent une adresse et un écosystème à Dubai.' },
+    ],
+    faq: [
+      { question: 'RAKEZ ou Dubai Silicon Oasis : comment choisir ?', answer: 'Tout part de votre activité. RAKEZ offre un large choix d’activités et des formules flexibles ; Dubai Silicon Oasis apporte une adresse à Dubai et un écosystème tech. Votre budget, le nombre de visas nécessaires et vos besoins de bureau font le reste. Nous vous présentons les options côte à côte avant toute décision.' },
+      { question: 'Puis-je vivre à Dubai avec une société à RAKEZ ?', answer: 'Oui. Le visa de résidence obtenu par votre société de free zone est un visa émirien : il vous permet de vivre dans l’émirat de votre choix, Dubai compris.' },
+      { question: 'Faut-il être sur place pour créer la société ?', answer: 'La création de la société se prépare en grande partie à distance. Votre présence aux Émirats est en revanche nécessaire pour le visa : entrée sur le territoire, examen médical et biométrie de l’Emirates ID.' },
+      { question: 'Free zone ou société sur le marché local ?', answer: 'Une société de free zone convient à la plupart des activités de services, de conseil, de tech et de commerce international. Si votre activité suppose de vendre directement sur le marché local émirien ou d’exercer une profession réglementée, une autre structure peut être nécessaire : nous vous le disons dès le premier échange.' },
+      { question: 'Ma société sera-t-elle imposée ?', answer: 'Les Émirats appliquent un impôt sur les sociétés et une TVA. Une société de free zone peut bénéficier d’un régime favorable sur ses revenus qualifiants, sous conditions. Nous organisons l’enregistrement fiscal et le suivi des déclarations avec des professionnels agréés.' },
+      { question: 'Combien de temps faut-il ?', answer: 'Une fois votre dossier complet, la licence est délivrée en quelques jours à quelques semaines selon la free zone. Le compte bancaire et les visas demandent ensuite plus de temps : nous vous donnons un calendrier réaliste dès le départ.' },
     ],
   },
   georgie: {
