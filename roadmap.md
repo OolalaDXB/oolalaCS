@@ -9,3 +9,4 @@
 - [x] Add Mashreq and RAKBANK as UAE banking partners with official logos on the Émirats page.- [x] Site en FR / EN / RU (/en, /ru), à faire relire par Darya
 
 - [x] Resserrer les espaces entre sections, agrandir le bandeau introductif et ajouter le favicon Oo ; rendu vérifié.
+- [x] Placer « Chaque destination ouvre de nouvelles possibilités… » en sous-titre sous « Où commence votre prochain chapitre ? » ; rendu vérifié en FR/EN/RU, desktop et mobile.
