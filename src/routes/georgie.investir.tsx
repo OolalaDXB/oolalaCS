@@ -3,6 +3,10 @@ import { Check, Building2, ClipboardCheck, Scale } from 'lucide-react';
 import { ContactForm } from '@/components/oolala/contact-form';
 import { DaryaSection, Eyebrow } from '@/components/oolala/shared';
 import { pageHead } from '@/lib/oolala';
+import bankOfGeorgia from '@/assets/bank-of-georgia.svg.asset.json';
+import solo from '@/assets/solo.svg.asset.json';
+import tbcBank from '@/assets/tbc-bank.svg.asset.json';
+import tbcConcept from '@/assets/tbc-concept.svg.asset.json';
 export const Route = createFileRoute('/georgie/investir')({ head: () => pageHead('Investir dans l’immobilier en Géorgie', 'Acquisition de biens existants à Gudauri et Tbilissi, juridique, banque et gestion locative. Votre investissement coordonné par Darya depuis Dubai.', '/georgie/investir'), component: InvestPage });
 function InvestPage() {
   return <>
@@ -61,8 +65,14 @@ function GeorgiaNetwork() {
 function BankContacts() {
   return <>
     <div className="bank-network">
-      <div className="bank-contact"><h3>Bank of Georgia · SOLO</h3><p>Des contacts privilégiés auprès de Bank of Georgia, y compris pour son service premium SOLO, pour préparer et suivre votre dossier bancaire.</p></div>
-      <div className="bank-contact"><h3>TBC Bank · TBC Concept</h3><p>Des interlocuteurs auprès de TBC Bank et de son service premium TBC Concept pour accompagner vos démarches selon votre profil et votre projet.</p></div>
+      <div className="bank-contact">
+        <div className="bank-logos"><div className="bank-brand"><img className="bank-symbol" src={bankOfGeorgia.url} alt="Logo Bank of Georgia" width="60" height="52" /><span>Bank of<br />Georgia</span></div><div className="bank-brand"><img className="bank-symbol" src={solo.url} alt="Logo SOLO" width="44" height="44" /><span>SOLO</span></div></div>
+        <h3>Bank of Georgia · SOLO</h3><p>Des contacts privilégiés auprès de Bank of Georgia, y compris pour son service premium SOLO, pour préparer et suivre votre dossier bancaire.</p>
+      </div>
+      <div className="bank-contact">
+        <div className="bank-logos"><div className="bank-brand"><img className="bank-symbol" src={tbcBank.url} alt="Logo TBC Bank" width="54" height="48" /><span>TBC Bank</span></div><img className="bank-logo-premium" src={tbcConcept.url} alt="Logo TBC Concept" width="149" height="40" /></div>
+        <h3>TBC Bank · TBC Concept</h3><p>Des interlocuteurs auprès de TBC Bank et de son service premium TBC Concept pour accompagner vos démarches selon votre profil et votre projet.</p>
+      </div>
     </div>
     <p className="network-caveat">L’ouverture d’un compte et l’accès aux services premium restent soumis aux conditions d’éligibilité et à la décision de chaque banque. Ces contacts ne constituent ni une garantie d’acceptation ni une garantie sur l’investissement.</p>
   </>;
