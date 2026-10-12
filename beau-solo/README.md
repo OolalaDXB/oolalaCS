@@ -80,8 +80,11 @@ It does nothing until the secret `RESEND_API_KEY` is set (Supabase → Edge
 Functions → Secrets). Optional: `SOLO_MAIL_FROM`, `SOLO_REPLY_TO`, `SOLO_SITE_URL`.
 
 Back-office sign-in links are sent by Supabase Auth itself: they need the same
-Resend key as custom SMTP (Authentication → Emails → SMTP: smtp.resend.com,
-port 465, user `resend`).
+Resend key as custom SMTP (Authentication → Emails → SMTP: host
+`smtp.resend.com`, port 465, username exactly `resend`, password the Resend API
+key, sender an `@oolala.ae` address). A wrong username shows in the Auth logs as
+`535 "Invalid username"` on `/otp`, and the sign-in screen says the email
+service is not answering.
 
 ## Not in P1
 

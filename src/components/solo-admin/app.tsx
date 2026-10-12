@@ -40,11 +40,13 @@ export function AdminApp() {
 
 function SignIn() {
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [reason, setReason] = useState('');
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const email = String(new FormData(event.currentTarget).get('email') ?? '').trim().toLowerCase();
     setState('sending');
     const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/admin` } });
+    setReason(error ? signInError(error) : '');
     setState(error ? 'error' : 'sent');
   }
   return <div className="admin-center">
@@ -53,9 +55,18 @@ function SignIn() {
     {state === 'sent' ? <p className="page-lead">Un lien de connexion vient d’être envoyé. Ouvrez-le depuis cet appareil.</p> : <form className="contact-form admin-signin" onSubmit={submit}>
       <div className="field"><label htmlFor="admin-email">Email</label><input id="admin-email" name="email" type="email" autoComplete="email" required /></div>
       <Button type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Envoi…' : 'Recevoir un lien de connexion'}</Button>
-      {state === 'error' && <p role="alert" className="booking-error">Envoi impossible. Vérifiez l’adresse : seuls les comptes invités peuvent se connecter.</p>}
+      {state === 'error' && <p role="alert" className="booking-error">{reason}</p>}
     </form>}
   </div>;
+}
+
+// Supabase Auth answers 422 or 400 for an unknown address (no sign-up here),
+// 429 when the email limit is reached and 500 when its mail server fails.
+function signInError(error: { status?: number | undefined; message: string }) {
+  if (error.status === 429) return 'Trop de demandes de lien. Réessayez dans quelques minutes.';
+  if (error.status === 422 || error.status === 400 || /signups not allowed/i.test(error.message)) return 'Cette adresse n’a pas de compte. Seuls les comptes créés pour l’équipe peuvent se connecter.';
+  if (!error.status || error.status >= 500) return 'Le lien n’a pas pu être envoyé : le service d’email ne répond pas (réglage SMTP de Supabase). Réessayez plus tard.';
+  return `Envoi impossible : ${error.message}`;
 }
 
 function Shell({ staff }: { staff: Staff }) {
