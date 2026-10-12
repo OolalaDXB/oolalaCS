@@ -31,22 +31,27 @@ The version ledger is `beau_solo.schema_versions`, separate from the host's.
   `solo:settings` (types, places), `solo:admin` (all).
 - A signed-in account that is not staff reads nothing (tested).
 
+Signing in: email and password (no email sent, nothing to configure). Each
+person changes their password from their name in the back-office header. The
+emailed link remains as a second option; it works only once Supabase Auth has
+its own mail server (see Emails), since the built-in one delivers only to
+members of the Supabase organisation.
+
 Granting access:
 
-1. Supabase → Authentication → URL configuration: add the site's `/admin` URL
-   (Lovable preview and production domain) to the redirect URLs, so the magic
-   link comes back to the back office.
-2. Create the person's account, confirmed and without an invitation email (an
-   invitation would redirect to the host's Site URL): Supabase → Authentication
-   → Users → *Add user* → *Create new user*, any password, *Auto Confirm User*.
-   Sign-in uses `shouldCreateUser: false`: nobody else can create an account.
+1. Create the person's account, confirmed and without an invitation email:
+   Supabase → Authentication → Users → *Add user* → *Create new user*, a
+   temporary password, *Auto Confirm User*. They change it at first sign-in.
    Done on 2026-10-12 for darya@oolala.ae and mickael@oolala.ae.
-3. SQL editor:
+2. SQL editor:
 
 ```sql
 insert into beau_solo.staff (email, name, permissions) values ('<email>', 'Darya', array['solo:admin']);
 update beau_solo.settings set notify_email = '<email>' where id;
 ```
+
+3. Only for the emailed link: add the site's `/admin` URL to Authentication →
+   URL configuration → Redirect URLs.
 
 ## Rules for the SQL files
 

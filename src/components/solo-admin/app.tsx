@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { CalendarDays, Inbox, LogOut, Plus, Settings2, Sun, Users } from 'lucide-react';
+import { CalendarDays, Inbox, KeyRound, LogOut, Plus, Settings2, Sun, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 const logo = { url: '/images/oolala-cs-horizontal-dark.svg' };
@@ -38,34 +38,46 @@ export function AdminApp() {
   return <Shell staff={staff} />;
 }
 
+// Password first: it needs no email. The emailed link stays available, but
+// Supabase only delivers it once the project has its own mail server (SMTP).
 function SignIn() {
+  const [mode, setMode] = useState<'password' | 'link'>('password');
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [reason, setReason] = useState('');
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const email = String(new FormData(event.currentTarget).get('email') ?? '').trim().toLowerCase();
+    const f = new FormData(event.currentTarget);
+    const email = String(f.get('email') ?? '').trim().toLowerCase();
     setState('sending');
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/admin` } });
-    setReason(error ? signInError(error) : '');
-    setState(error ? 'error' : 'sent');
+    const { error } = mode === 'password'
+      ? await supabase.auth.signInWithPassword({ email, password: String(f.get('password') ?? '') })
+      : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/admin` } });
+    setReason(error ? signInError(error, mode) : '');
+    setState(error ? 'error' : mode === 'link' ? 'sent' : 'idle');
   }
+  const switchTo = (next: 'password' | 'link') => { setMode(next); setState('idle'); setReason(''); };
   return <div className="admin-center">
     <img className="admin-logo" src={logo.url} alt="Oolala Corporate Services" />
     <h1 className="section-title">Back-office</h1>
     {state === 'sent' ? <p className="page-lead">Un lien de connexion vient d’être envoyé. Ouvrez-le depuis cet appareil.</p> : <form className="contact-form admin-signin" onSubmit={submit}>
-      <div className="field"><label htmlFor="admin-email">Email</label><input id="admin-email" name="email" type="email" autoComplete="email" required /></div>
-      <Button type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Envoi…' : 'Recevoir un lien de connexion'}</Button>
+      <div className="field"><label htmlFor="admin-email">Email</label><input id="admin-email" name="email" type="email" autoComplete="username" required /></div>
+      {mode === 'password' && <div className="field"><label htmlFor="admin-password">Mot de passe</label><input id="admin-password" name="password" type="password" autoComplete="current-password" required /></div>}
+      <Button type="submit" disabled={state === 'sending'}>{state === 'sending' ? '…' : mode === 'password' ? 'Se connecter' : 'Recevoir un lien de connexion'}</Button>
       {state === 'error' && <p role="alert" className="booking-error">{reason}</p>}
+      <Button type="button" variant="ghost" size="sm" onClick={() => switchTo(mode === 'password' ? 'link' : 'password')}>{mode === 'password' ? 'Recevoir un lien par email à la place' : 'Se connecter avec un mot de passe'}</Button>
     </form>}
   </div>;
 }
 
-// Supabase Auth answers 422 or 400 for an unknown address (no sign-up here),
-// 429 when the email limit is reached and 500 when its mail server fails.
-function signInError(error: { status?: number | undefined; message: string }) {
+// Supabase Auth answers 400 for a wrong password, 422 or 400 for an unknown
+// address (no sign-up here), 429 when its limits are hit and 500 when its mail
+// server fails.
+function signInError(error: { status?: number | undefined; message: string }, mode: 'password' | 'link') {
+  if (mode === 'password' && error.status === 400) return 'Email ou mot de passe incorrect.';
   if (error.status === 429) return 'Trop de demandes de lien. Réessayez dans quelques minutes.';
   if (error.status === 422 || error.status === 400 || /signups not allowed/i.test(error.message)) return 'Cette adresse n’a pas de compte. Seuls les comptes créés pour l’équipe peuvent se connecter.';
-  if (!error.status || error.status >= 500) return 'Le lien n’a pas pu être envoyé : le service d’email ne répond pas (réglage SMTP de Supabase). Réessayez plus tard.';
+  if (!error.status) return 'Serveur injoignable. Vérifiez la connexion internet et réessayez.';
+  if (error.status >= 500) return mode === 'link' ? 'Le lien n’a pas pu être envoyé : le service d’email ne répond pas (réglage SMTP de Supabase). Utilisez le mot de passe.' : 'Service de connexion indisponible. Réessayez dans un instant.';
   return `Envoi impossible : ${error.message}`;
 }
 
@@ -75,6 +87,7 @@ function Shell({ staff }: { staff: Staff }) {
   const [tab, setTab] = useState<Tab>(visible.some(t => t.key === initial) ? initial : 'today');
   const [editor, setEditor] = useState<EditorSeed | null>(null);
   const [refresh, setRefresh] = useState(0);
+  const [account, setAccount] = useState(false);
   const go = (key: Tab) => { setTab(key); history.replaceState(null, '', `#${key}`); window.scrollTo({ top: 0 }); };
   const saved = () => { setEditor(null); setRefresh(r => r + 1); };
   const current = visible.find(t => t.key === tab) ?? visible[0] ?? tabs[0]!;
@@ -83,9 +96,10 @@ function Shell({ staff }: { staff: Staff }) {
     <header className="admin-top">
       <img className="admin-logo" src={logo.url} alt="Oolala" />
       <nav className="admin-tabs" aria-label="Back-office">{visible.map(t => <button key={t.key} type="button" aria-current={t.key === tab ? 'page' : undefined} onClick={() => go(t.key)}><t.icon size={18} aria-hidden="true" /><span>{t.label}</span></button>)}</nav>
-      <div className="admin-account"><span>{staff.name}</span><Button variant="ghost" size="icon" aria-label="Se déconnecter" onClick={() => supabase.auth.signOut()}><LogOut /></Button></div>
+      <div className="admin-account"><Button variant="ghost" size="sm" aria-expanded={account} onClick={() => setAccount(a => !a)}><KeyRound /> {staff.name}</Button><Button variant="ghost" size="icon" aria-label="Se déconnecter" onClick={() => supabase.auth.signOut()}><LogOut /></Button></div>
     </header>
     <main className="admin-main">
+      {account && <PasswordForm onDone={() => setAccount(false)} />}
       <div className="admin-heading"><h1>{current.label}</h1>{can(staff, 'solo:agenda') && <Button size="sm" onClick={() => setEditor({})}><Plus /> Rendez-vous</Button>}</div>
       {tab === 'today' && <Today staff={staff} refresh={refresh} onEdit={setEditor} onChanged={saved} go={go} />}
       {tab === 'agenda' && <Agenda staff={staff} refresh={refresh} onEdit={setEditor} onChanged={saved} />}
@@ -95,6 +109,27 @@ function Shell({ staff }: { staff: Staff }) {
     </main>
     {editor && <BookingEditor staff={staff} seed={editor} onClose={() => setEditor(null)} onSaved={saved} />}
   </div>;
+}
+
+function PasswordForm({ onDone }: { onDone: () => void }) {
+  const [state, setState] = useState('');
+  async function save(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const f = new FormData(event.currentTarget);
+    const password = String(f.get('password') ?? '');
+    if (password.length < 10) { setState('10 caractères au moins.'); return; }
+    if (password !== String(f.get('confirm') ?? '')) { setState('Les deux mots de passe ne correspondent pas.'); return; }
+    const { error } = await supabase.auth.updateUser({ password });
+    setState(error ? `Échec : ${error.message}` : 'Mot de passe changé.');
+    if (!error) setTimeout(onDone, 1200);
+  }
+  return <form className="contact-form admin-panel" onSubmit={save}>
+    <h2>Changer mon mot de passe</h2>
+    <div className="form-two"><div className="field"><label htmlFor="pw-new">Nouveau mot de passe</label><input id="pw-new" name="password" type="password" autoComplete="new-password" minLength={10} required /></div>
+      <div className="field"><label htmlFor="pw-confirm">Confirmer</label><input id="pw-confirm" name="confirm" type="password" autoComplete="new-password" minLength={10} required /></div></div>
+    <div className="admin-actions"><Button type="submit">Enregistrer</Button><Button type="button" variant="ghost" onClick={onDone}>Fermer</Button></div>
+    {state && <p role="status" className="booking-muted">{state}</p>}
+  </form>;
 }
 
 function Today({ staff, refresh, onEdit, onChanged, go }: { staff: Staff; refresh: number; onEdit: (seed: EditorSeed) => void; onChanged: () => void; go: (tab: Tab) => void }) {
