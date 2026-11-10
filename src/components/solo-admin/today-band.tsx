@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { airUrl, aqiBand, CLOCKS, forecastUrl, greeting, KIND_LABEL, parseAir, parseForecast, PLACES, readClock, type Kind, type Place, type Weather } from '@/lib/today';
+import { airUrl, aqiBand, DEFAULT_PLACES, findPlaces, forecastUrl, greeting, KIND_LABEL, parseAir, parseForecast, readClock, readPlaces, writePlaces, type Found, type Kind, type Place, type Weather } from '@/lib/today';
 
 // The same eight kinds as small drawings, read at a glance in a row of days.
 const SUN = <><circle cx="12" cy="12" r="4.2" fill="#f5b301" /><g stroke="#f5b301" strokeWidth="1.8" strokeLinecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" /></g></>;
@@ -23,44 +23,73 @@ async function report(p: Place): Promise<Report> {
   const [w, a] = await Promise.allSettled([getJson(forecastUrl(p)), getJson(airUrl(p))]);
   return { weather: w.status === 'fulfilled' ? parseForecast(w.value) : null, aqi: a.status === 'fulfilled' ? parseAir(a.value) : null };
 }
+const keyOf = (p: Place) => `${p.latitude.toFixed(3)},${p.longitude.toFixed(3)}`;
+
+function Clock({ now, zone, label }: { now: Date; zone: string; label: string }) {
+  const c = readClock(now, zone);
+  const hand = (a: number, len: number, w: number) => <line className="today-hand" x1="32" y1="32" x2="32" y2={32 - len} strokeWidth={w} strokeLinecap="round" transform={`rotate(${a} 32 32)`} />;
+  return <span className={`today-clock${c.night ? ' is-night' : ''}`}>
+    <svg viewBox="0 0 64 64" role="img" aria-label={`${label} ${String(c.h).padStart(2, '0')}:${String(c.m).padStart(2, '0')}`}>
+      <circle cx="32" cy="32" r="30" className="today-rim" />
+      <g className="today-ticks">{Array.from({ length: 12 }, (_, i) => <line key={i} x1="32" y1="6" x2="32" y2={i % 3 === 0 ? 11 : 9} strokeWidth={i % 3 === 0 ? 2.4 : 1.4} transform={`rotate(${i * 30} 32 32)`} />)}</g>
+      {hand(c.hourAngle, 14, 3.4)}{hand(c.minuteAngle, 21, 2.4)}<circle cx="32" cy="32" r="2.4" className="today-pin" />
+    </svg>
+    <strong>{String(c.h).padStart(2, '0')}:{String(c.m).padStart(2, '0')}</strong>
+  </span>;
+}
+
+function PlacePicker({ places, onChange, onClose }: { places: Place[]; onChange: (p: Place[]) => void; onClose: () => void }) {
+  const [q, setQ] = useState('');
+  const [found, setFound] = useState<Found[] | null>(null);
+  useEffect(() => {
+    if (q.trim().length < 2) { setFound(null); return; }
+    const t = setTimeout(() => findPlaces(q).then(setFound).catch(() => setFound([])), 300);
+    return () => clearTimeout(t);
+  }, [q]);
+  return <div className="today-picker">
+    <ul>{places.map((p, i) => <li key={keyOf(p)}><span>{p.name}</span><small>{p.tz.split('/').pop()?.replace(/_/g, ' ')}</small>
+      <button type="button" disabled={i === 0} onClick={() => { const l = [...places]; [l[i - 1], l[i]] = [l[i]!, l[i - 1]!]; onChange(l); }} aria-label={`Monter ${p.name}`}>↑</button>
+      <button type="button" disabled={places.length <= 1} onClick={() => onChange(places.filter((_, k) => k !== i))} aria-label={`Retirer ${p.name}`}>×</button></li>)}</ul>
+    {places.length < 4 && <div className="field"><label htmlFor="today-find">Ajouter une ville</label><input id="today-find" value={q} onChange={e => setQ(e.target.value)} placeholder="Tbilissi, Courchevel, Abu Dhabi…" autoComplete="off" /></div>}
+    {found && (found.length === 0 ? <p className="booking-muted">Aucune ville trouvée.</p> : <div className="today-found">{found.map(f => <button key={keyOf(f) + f.label} type="button" onClick={() => { onChange([...places, { name: f.name, latitude: f.latitude, longitude: f.longitude, tz: f.tz }]); setQ(''); }}>{f.label}</button>)}</div>)}
+    <div className="today-picker-foot"><button type="button" className="today-link" onClick={() => onChange(DEFAULT_PLACES)}>Dubai, Vannes, Gudauri</button><button type="button" className="today-link" onClick={onClose}>Terminé</button></div>
+  </div>;
+}
 
 export function TodayBand({ name, timeZone }: { name: string; timeZone: string }) {
   const [now, setNow] = useState(() => new Date());
+  const [places, setPlaces] = useState<Place[]>(DEFAULT_PLACES);
+  const [editing, setEditing] = useState(false);
   const [reports, setReports] = useState<Record<string, Report>>({});
+  useEffect(() => { setPlaces(readPlaces()); }, []);
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 20_000); return () => clearInterval(t); }, []);
+  const placesKey = places.map(keyOf).join('|');
   useEffect(() => {
     let alive = true;
-    const load = () => PLACES.forEach(p => report(p).then(r => { if (alive) setReports(x => ({ ...x, [p.key]: r })); }));
+    const load = () => places.forEach(p => report(p).then(r => { if (alive) setReports(x => ({ ...x, [keyOf(p)]: r })); }));
     load();
     const t = setInterval(load, 30 * 60_000);
     return () => { alive = false; clearInterval(t); };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placesKey]);
+  const change = (l: Place[]) => { setPlaces(l); writePlaces(l); };
   const hour = readClock(now, timeZone).h;
   const date = new Intl.DateTimeFormat('fr-FR', { timeZone, weekday: 'long', day: 'numeric', month: 'long' }).format(now);
 
   return <section className="today-band" aria-label="Aujourd’hui">
-    <div className="today-hello"><p className="today-date">{date}</p><p className="today-greet">{greeting(hour)} {name.split(' ')[0]}</p></div>
-    <div className="today-places">{PLACES.map(p => {
-      const r = reports[p.key], w = r?.weather, band = aqiBand(r?.aqi ?? null);
-      const local = new Intl.DateTimeFormat('fr-FR', { timeZone: p.tz, weekday: 'short' });
-      return <div className="today-place" key={p.key}>
-        <div className="today-now"><Icon kind={w?.kind ?? null} size={34} /><div><strong>{p.name}</strong><span>{w ? `${Math.round(w.temperature)}° · ${w.kind ? KIND_LABEL[w.kind] : ''}${w.feels != null && Math.abs(w.feels - w.temperature) >= 3 ? ` · ressenti ${Math.round(w.feels)}°` : ''}` : r ? 'Météo indisponible' : 'Météo…'}</span>
-          {band && <span className={`today-aqi is-${band.key}`}>Air {Math.round(r!.aqi!)} · {band.label}</span>}</div></div>
-        {w && <ol className="today-days">{w.days.map((d, i) => <li key={d.date}><span>{i === 0 ? 'Auj.' : local.format(new Date(d.date + 'T12:00:00Z'))}</span><Icon kind={d.kind} size={20} /><span>{d.max != null ? Math.round(d.max) + '°' : '–'}<small> {d.min != null ? Math.round(d.min) + '°' : ''}</small></span>{d.rain != null && d.rain >= 30 && <small className="today-rain">{d.rain} %</small>}</li>)}</ol>}
-      </div>;
-    })}</div>
-    <div className="today-clocks">{CLOCKS.map(([label, zone]) => {
-      const c = readClock(now, zone);
-      const hand = (a: number, len: number, w: number, cls: string) => <line className={cls} x1="32" y1="32" x2="32" y2={32 - len} strokeWidth={w} strokeLinecap="round" transform={`rotate(${a} 32 32)`} />;
-      return <figure key={zone} className={c.night ? 'is-night' : ''}>
-        <svg viewBox="0 0 64 64" role="img" aria-label={`${label} ${String(c.h).padStart(2, '0')}:${String(c.m).padStart(2, '0')}`}>
-          <circle cx="32" cy="32" r="30" className="today-rim" />
-          <g className="today-ticks">{Array.from({ length: 12 }, (_, i) => <line key={i} x1="32" y1="5" x2="32" y2={i % 3 === 0 ? 10 : 8} strokeWidth={i % 3 === 0 ? 2 : 1} transform={`rotate(${i * 30} 32 32)`} />)}</g>
-          {hand(c.hourAngle, 14, 3, 'today-hand')}{hand(c.minuteAngle, 21, 2, 'today-hand')}<circle cx="32" cy="32" r="2" className="today-pin" />
-        </svg>
-        <figcaption><strong>{String(c.h).padStart(2, '0')}:{String(c.m).padStart(2, '0')}</strong>{label}</figcaption>
-      </figure>;
-    })}</div>
-    <p className="today-source">Météo et air : Open-Meteo, modèle (pas une station).</p>
+    <div className="today-head"><p><span className="today-date">{date}</span><strong>{greeting(hour)} {name.split(' ')[0]}</strong></p>
+      <button type="button" className="today-link" onClick={() => setEditing(e => !e)} aria-expanded={editing}>{editing ? 'Fermer' : 'Villes'}</button></div>
+    {editing && <PlacePicker places={places} onChange={change} onClose={() => setEditing(false)} />}
+    <ul className="today-rows">{places.map(p => {
+      const r = reports[keyOf(p)], w = r?.weather, band = aqiBand(r?.aqi ?? null);
+      const day = new Intl.DateTimeFormat('fr-FR', { timeZone: p.tz, weekday: 'short' });
+      return <li key={keyOf(p)} className="today-row">
+        <Clock now={now} zone={p.tz} label={p.name} />
+        <div className="today-place"><strong>{p.name}</strong>
+          <span className="today-now"><Icon kind={w?.kind ?? null} size={20} />{w ? <>{Math.round(w.temperature)}°<small>{w.kind ? KIND_LABEL[w.kind] : ''}{w.feels != null && Math.abs(w.feels - w.temperature) >= 3 ? ` · ressenti ${Math.round(w.feels)}°` : ''}</small></> : <small>{r ? 'météo indisponible' : '…'}</small>}</span>
+          {band && <span className={`today-aqi is-${band.key}`} title={`Qualité de l’air : ${band.label}`}>Air {Math.round(r!.aqi!)}</span>}</div>
+        {w && <ol className="today-days" aria-label={`Prévisions ${p.name}`}>{w.days.slice(1, 3).map(d => <li key={d.date}><span>{day.format(new Date(d.date + 'T12:00:00Z')).replace('.', '')}</span><Icon kind={d.kind} size={16} /><span>{d.max != null ? Math.round(d.max) + '°' : '–'}<small>{d.min != null ? Math.round(d.min) + '°' : ''}</small></span></li>)}</ol>}
+      </li>;
+    })}</ul>
   </section>;
 }

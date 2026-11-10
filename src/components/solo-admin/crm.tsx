@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { ArrowLeft, CalendarPlus, Mail, MessageCircle, Phone, Pin } from 'lucide-react';
+import { ArrowLeft, CalendarPlus, Mail, MessageCircle, Phone, Pin, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  adminRpc, errorLabel, shortDateTime,
-  type Booking, type Contact, type ContactProfile, type Enquiry, type Staff,
+  adminRpc, destinationLabel, errorLabel, serviceLabel, shortDateTime, stageLabel,
+  type Booking, type Contact, type ContactProfile, type Enquiry, type Stage, type Staff,
 } from '@/lib/solo-admin';
 import { BookingCard, type EditorSeed } from './booking-editor';
+import { ContactForm } from './contact-form';
+
+const shortDay = (d: string) => new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`));
 
 const enquiryStatus: Record<Enquiry['status'], string> = { new: 'Nouvelles', handled: 'Traitées', archived: 'Archivées', spam: 'Indésirables' };
 const contactStatus: Record<Contact['status'], string> = { lead: 'Prospect', client: 'Client', archived: 'Archivé' };
@@ -55,9 +58,10 @@ export function Enquiries({ staff, onPlan }: { staff: Staff; onPlan: (seed: Edit
 
 export function Clients({ staff, refresh, onPlan, onEdit, onChanged }: { staff: Staff; refresh: number; onPlan: (seed: EditorSeed) => void; onEdit: (seed: EditorSeed) => void; onChanged: () => void }) {
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<'' | Contact['status']>('');
+  const [status, setStatus] = useState<'' | Contact['status'] | Stage>('');
   const [list, setList] = useState<Contact[] | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
     const id = setTimeout(() => adminRpc<Contact[]>('solo_admin_contacts', { p_search: search || null, p_status: status || null }).then(setList).catch(e => setError(errorLabel(e.message))), 250);
@@ -66,13 +70,16 @@ export function Clients({ staff, refresh, onPlan, onEdit, onChanged }: { staff: 
   if (open) return <ContactPanel id={open} staff={staff} refresh={refresh} onBack={() => setOpen(null)} onPlan={onPlan} onEdit={onEdit} onChanged={onChanged} />;
   return <>
     <div className="admin-filters"><input type="search" placeholder="Nom, email, téléphone, société…" value={search} onChange={e => setSearch(e.target.value)} aria-label="Rechercher un client" />
-      <select value={status} onChange={e => setStatus(e.target.value as typeof status)} aria-label="Statut"><option value="">Tous</option>{(Object.keys(contactStatus) as Contact['status'][]).map(s => <option key={s} value={s}>{contactStatus[s]}</option>)}</select>
-      <Button size="sm" variant="ghost" onClick={async () => { const name = window.prompt('Nom du nouveau contact'); if (!name) return; const c = await adminRpc<Contact>('solo_admin_contact_save', { p: { name } }); setOpen(c.id); }}>Nouveau contact</Button></div>
+      <select value={status} onChange={e => setStatus(e.target.value as typeof status)} aria-label="Statut ou étape"><option value="">Tous</option>{(Object.keys(contactStatus) as Contact['status'][]).map(s => <option key={s} value={s}>{contactStatus[s]}</option>)}
+        <optgroup label="Étape">{(Object.keys(stageLabel) as Stage[]).map(s => <option key={s} value={s}>{stageLabel[s]}</option>)}</optgroup></select>
+      <Button size="sm" onClick={() => setCreating(true)}><UserPlus /> Nouveau contact</Button></div>
+    {creating && <ContactForm onClose={() => setCreating(false)} onSaved={c => { setCreating(false); setOpen(c.id); }} />}
     {error && <p role="alert" className="booking-error">{error}</p>}
     {!list ? <p className="booking-muted">Chargement…</p> : list.length === 0 ? <p className="booking-muted">Aucun contact.</p> : <div className="admin-list">{list.map(c =>
       <button key={c.id} type="button" className="admin-row admin-row-button" onClick={() => setOpen(c.id)}>
-        <span><strong>{c.name ?? c.email ?? 'Sans nom'}</strong>{c.needs_review && <span className="status-pill is-pending"> à vérifier</span>}<br /><small>{[c.email, c.phone, c.company].filter(Boolean).join(' · ')}</small></span>
-        <span className="admin-row-meta"><span className={`status-pill is-${c.status === 'client' ? 'confirmed' : c.status === 'archived' ? 'cancelled' : 'pending'}`}>{contactStatus[c.status]}</span><small>{c.enquiries} demande(s) · {c.bookings} RDV</small></span>
+        <span><strong>{c.name ?? c.email ?? c.company ?? 'Sans nom'}</strong>{c.needs_review && <span className="status-pill is-pending"> à vérifier</span>}<br /><small>{[c.company && c.role ? `${c.role}, ${c.company}` : c.company, c.city ?? c.country, c.email, c.phone].filter(Boolean).join(' · ')}</small>
+          {c.next_action && <><br /><small className="contact-next">→ {c.next_action}{c.next_action_on ? ` · ${shortDay(c.next_action_on)}` : ''}</small></>}</span>
+        <span className="admin-row-meta"><span className={`status-pill is-${c.status === 'client' ? 'confirmed' : c.status === 'archived' ? 'cancelled' : 'pending'}`}>{contactStatus[c.status]}</span>{c.stage && c.stage !== 'new' && <span className={`stage-pill is-${c.stage}`}>{stageLabel[c.stage]}</span>}<small>{c.enquiries} demande(s) · {c.bookings} RDV</small></span>
       </button>)}</div>}
   </>;
 }
@@ -83,11 +90,6 @@ function ContactPanel({ id, staff, refresh, onBack, onPlan, onEdit, onChanged }:
   const [error, setError] = useState('');
   const load = useCallback(() => { adminRpc<ContactProfile>('solo_admin_contact', { p_id: id }).then(setC).catch(e => setError(errorLabel(e.message))); }, [id]);
   useEffect(load, [load, refresh]);
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const f = Object.fromEntries(new FormData(event.currentTarget).entries());
-    try { await adminRpc('solo_admin_contact_save', { p: { ...f, id, needs_review: f['needs_review'] === 'on' } }); setEditing(false); load(); } catch (e) { setError(errorLabel((e as Error).message)); }
-  }
   async function note(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget; const f = new FormData(form);
@@ -101,20 +103,28 @@ function ContactPanel({ id, staff, refresh, onBack, onPlan, onEdit, onChanged }:
     <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft /> Clients</Button>
     <section className="admin-panel">
       <div className="admin-card-title"><h2>{c.name ?? c.email ?? 'Sans nom'}</h2><span className="status-pill">{contactStatus[c.status]}</span></div>
-      {!editing ? <>
-        <p className="type-meta">{[c.email, c.phone, c.company, c.country, c.lang?.toUpperCase()].filter(Boolean).join(' · ')}</p>
-        <p className="booking-muted">Premier contact {shortDateTime(c.first_seen_at, staff.timezone)} · source {c.source ?? '—'}{c.needs_review ? ' · fiche à vérifier (doublon possible)' : ''}</p>
+      <>
+        {(c.role || c.company) && <p className="contact-org">{[c.role, c.company].filter(Boolean).join(' · ')}</p>}
+        {c.stage && <div className="stage-track is-static" aria-label="Étape">{(Object.keys(stageLabel) as Stage[]).map(k => <span key={k} aria-current={c.stage === k ? 'step' : undefined} className={`is-${k}`}>{stageLabel[k]}</span>)}</div>}
+        {c.next_action && <p className="contact-next-box">Prochaine action : <strong>{c.next_action}</strong>{c.next_action_on ? ` · ${shortDay(c.next_action_on)}` : ''}</p>}
+        <dl className="contact-facts">
+          {c.email && <><dt>Email</dt><dd>{c.email}</dd></>}
+          {c.phone && <><dt>Téléphone</dt><dd>{c.phone}{c.whatsapp ? ' · WhatsApp' : ''}</dd></>}
+          {(c.city || c.country) && <><dt>Vit à</dt><dd>{[c.address_line, c.postal_code, c.city, c.country].filter(Boolean).join(', ')}</dd></>}
+          {c.nationality && <><dt>Nationalité</dt><dd>{c.nationality}</dd></>}
+          {(c.lang || c.timezone) && <><dt>Langue · fuseau</dt><dd>{[c.lang?.toUpperCase(), c.timezone].filter(Boolean).join(' · ')}</dd></>}
+          {(c.destinations?.length ?? 0) > 0 && <><dt>Destinations</dt><dd>{c.destinations!.map(d => <span key={d} className="chip-static">{destinationLabel[d] ?? d}</span>)}</dd></>}
+          {(c.services?.length ?? 0) > 0 && <><dt>Besoins</dt><dd>{c.services!.map(d => <span key={d} className="chip-static">{serviceLabel[d] ?? d}</span>)}</dd></>}
+          {c.budget && <><dt>Budget</dt><dd>{c.budget}</dd></>}
+          {(c.linkedin || c.website) && <><dt>En ligne</dt><dd>{[c.linkedin, c.website].filter(Boolean).map(u => <a key={u!} href={/^https?:/.test(u!) ? u! : `https://${u}`} target="_blank" rel="noreferrer noopener">{u!.replace(/^https?:\/\/(www\.)?/, '')}</a>)}</dd></>}
+          {(c.tags?.length ?? 0) > 0 && <><dt>Étiquettes</dt><dd>{c.tags!.map(t => <span key={t} className="chip-static">{t}</span>)}</dd></>}
+          <dt>Origine</dt><dd>{[c.source === 'admin' ? 'ajouté au back-office' : c.source, c.referred_by ? `recommandé par ${c.referred_by}` : null, `premier contact ${shortDateTime(c.first_seen_at, staff.timezone)}`].filter(Boolean).join(' · ')}</dd>
+        </dl>
+        {c.needs_review && <p className="booking-muted">Fiche à vérifier : doublon possible.</p>}
         <Reach email={c.email} phone={c.phone} />
         <div className="admin-actions"><Button size="sm" onClick={() => onPlan({ contact: { id: c.id, name: c.name, email: c.email, phone: c.phone } })}><CalendarPlus /> Planifier un rendez-vous</Button><Button size="sm" variant="ghost" onClick={() => setEditing(true)}>Modifier la fiche</Button></div>
-      </> : <form className="contact-form" onSubmit={save}>
-        <div className="form-two"><div className="field"><label htmlFor="c-name">Nom</label><input id="c-name" name="name" defaultValue={c.name ?? ''} /></div><div className="field"><label htmlFor="c-company">Société</label><input id="c-company" name="company" defaultValue={c.company ?? ''} /></div></div>
-        <div className="form-two"><div className="field"><label htmlFor="c-email">Email</label><input id="c-email" name="email" type="email" defaultValue={c.email ?? ''} /></div><div className="field"><label htmlFor="c-phone">Téléphone</label><input id="c-phone" name="phone" defaultValue={c.phone ?? ''} /></div></div>
-        <div className="form-three"><div className="field"><label htmlFor="c-country">Pays</label><input id="c-country" name="country" defaultValue={c.country ?? ''} /></div>
-          <div className="field"><label htmlFor="c-lang">Langue</label><select id="c-lang" name="lang" defaultValue={c.lang ?? ''}><option value="">—</option><option value="fr">Français</option><option value="en">English</option><option value="ru">Русский</option></select></div>
-          <div className="field"><label htmlFor="c-status">Statut</label><select id="c-status" name="status" defaultValue={c.status}>{(Object.keys(contactStatus) as Contact['status'][]).map(s => <option key={s} value={s}>{contactStatus[s]}</option>)}</select></div></div>
-        <label className="admin-check"><input type="checkbox" name="needs_review" defaultChecked={c.needs_review} /> Fiche à vérifier</label>
-        <div className="form-actions"><Button type="submit">Enregistrer</Button><Button type="button" variant="ghost" onClick={() => setEditing(false)}>Annuler</Button></div>
-      </form>}
+      </>
+      {editing && <ContactForm contact={c} onClose={() => setEditing(false)} onSaved={() => { setEditing(false); load(); }} />}
       {error && <p role="alert" className="booking-error">{error}</p>}
     </section>
 

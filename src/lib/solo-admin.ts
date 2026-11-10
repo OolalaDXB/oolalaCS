@@ -36,11 +36,32 @@ export type Enquiry = {
   id: string; crm_contact_id: string | null; name: string; email: string; phone: string | null; country: string | null; need: string | null;
   message: string; details: Record<string, string>; lang: string | null; page: string | null; status: 'new' | 'handled' | 'archived' | 'spam'; created_at: string;
 };
+export type Stage = 'new' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost';
 export type Contact = {
   id: string; name: string | null; email: string | null; phone: string | null; company: string | null; country: string | null; lang: string | null;
   status: 'lead' | 'client' | 'archived'; source: string | null; needs_review: boolean; first_seen_at: string; last_seen_at: string;
+  first_name?: string | null; last_name?: string | null; role?: string | null; website?: string | null; linkedin?: string | null; whatsapp?: boolean;
+  city?: string | null; address_line?: string | null; postal_code?: string | null; nationality?: string | null; timezone?: string | null;
+  destinations?: string[]; services?: string[]; stage?: Stage; budget?: string | null; referred_by?: string | null; tags?: string[];
+  next_action?: string | null; next_action_on?: string | null; created_by?: string | null;
   enquiries?: number; bookings?: number;
 };
+export const stageLabel: Record<Stage, string> = { new: 'Nouveau', qualified: 'Qualifié', proposal: 'Proposition', negotiation: 'Négociation', won: 'Gagné', lost: 'Perdu' };
+export const destinationLabel: Record<string, string> = { emirats: 'Émirats', georgie: 'Géorgie', france: 'France' };
+export const serviceLabel: Record<string, string> = { societe: 'Société', visa: 'Visa & résidence', banque: 'Banque', immobilier: 'Immobilier', comptabilite: 'Comptabilité', installation: 'Installation' };
+
+export type NewsItem = {
+  id: string; region: 'fr' | 'ae'; title: string; link: string | null; summary: string | null; published_at: string; topics: string[];
+  status: 'new' | 'todo' | 'done' | 'dismissed'; note: string | null; crm_contact_id: string | null; contact_name: string | null; source: string;
+  acted_by: string | null; acted_at: string | null;
+};
+export type NewsFeed = { items: NewsItem[]; counts: { todo: number; new: number }; sources: { total: number; failing: number; last: string | null } };
+export type NewsSource = { id: string; region: 'fr' | 'ae'; name: string; url: string; active: boolean; last_fetched_at: string | null; last_ok_at: string | null; last_error: string | null };
+export type CalendarSync = {
+  feed: { created_at: string; last_fetched_at: string | null; fetches: number } | null;
+  calendars: { id: string; label: string; host: string; active: boolean; last_synced_at: string | null; last_ok_at: string | null; last_error: string | null; events: number }[];
+};
+export type BusyTime = { calendar: string; starts_at: string; ends_at: string; summary: string | null };
 export type Note = { id: string; body: string; pinned: boolean; author: string | null; created_at: string };
 export type ContactProfile = Contact & { enquiries: Enquiry[]; bookings: Booking[]; notes: Note[] };
 export type Exception = { id: string; kind: 'closed' | 'open'; starts_at: string; ends_at: string; reason: string | null; created_by: string | null };
@@ -91,4 +112,5 @@ export const placeKindLabel: Record<Place['kind'], string> = { office: 'Bureau',
 export const errorLabel = (message: string) => ({
   slot_unavailable: 'Ce créneau chevauche un autre rendez-vous.', forbidden: 'Vous n’avez pas accès à cette action.', invalid_name: 'Indiquez un nom.',
   not_found: 'Élément introuvable.', invalid_duration: 'Durée invalide.', unknown_type: 'Type de rendez-vous inconnu.',
+  invalid_email: 'Adresse email invalide.', invalid_url: 'Adresse invalide : elle doit commencer par https:// (ou webcal://).', invalid_status: 'Statut inconnu.',
 } as Record<string, string>)[message] ?? `Erreur : ${message}`;

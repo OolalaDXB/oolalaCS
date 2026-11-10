@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { adminRpc, errorLabel, modeLabel, placeKindLabel, type ApptType, type Catalog, type Hours, type Place, type Staff } from '@/lib/solo-admin';
+import { CalendarSyncPanel, NewsSourcesPanel } from './sync-settings';
 
-type View = 'places' | 'types' | 'general';
+type View = 'places' | 'types' | 'general' | 'calendar' | 'news';
 const LANGS = [['fr', 'Français'], ['en', 'English'], ['ru', 'Русский']] as const;
 
 export function SettingsPanel({ staff }: { staff: Staff }) {
@@ -13,13 +14,15 @@ export function SettingsPanel({ staff }: { staff: Staff }) {
   const load = useCallback(() => { adminRpc<Catalog>('solo_admin_catalog').then(setCatalog).catch(e => setError(errorLabel(e.message))); }, []);
   useEffect(load, [load]);
   return <>
-    <div className="admin-subtabs" role="tablist">{([['places', 'Lieux'], ['types', 'Types de rendez-vous'], ['general', 'Général']] as [View, string][]).map(([k, l]) =>
+    <div className="admin-subtabs" role="tablist">{([['places', 'Lieux'], ['types', 'Types de rendez-vous'], ['calendar', 'Synchro agenda'], ['news', 'Actualités'], ['general', 'Général']] as [View, string][]).map(([k, l]) =>
       <button key={k} type="button" role="tab" aria-selected={view === k} onClick={() => setView(k)}>{l}</button>)}</div>
     {error && <p role="alert" className="booking-error">{error}</p>}
     {!catalog ? <p className="booking-muted">Chargement…</p> : <>
       {view === 'places' && <Places places={catalog.locations} onSaved={load} />}
       {view === 'types' && <Types catalog={catalog} onSaved={load} />}
       {view === 'general' && <General staff={staff} />}
+      {view === 'calendar' && <CalendarSyncPanel staff={staff} />}
+      {view === 'news' && <NewsSourcesPanel staff={staff} />}
     </>}
   </>;
 }

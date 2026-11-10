@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   addDays, adminRpc, errorLabel, localDate, localTime, longDay, zonedToIso,
-  type Booking, type Exception, type Hours, type Staff,
+  type Booking, type BusyTime, type Exception, type Hours, type Staff,
 } from '@/lib/solo-admin';
 import { BookingCard, type EditorSeed } from './booking-editor';
 
@@ -31,6 +31,7 @@ function Diary({ staff, refresh, onEdit, onChanged }: { staff: Staff; refresh: n
   const [start, setStart] = useState(today);
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [blocks, setBlocks] = useState<Exception[]>([]);
+  const [busy, setBusy] = useState<BusyTime[]>([]);
   const [showCancelled, setShowCancelled] = useState(false);
   const [error, setError] = useState('');
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(start, i)), [start]);
@@ -38,6 +39,8 @@ function Diary({ staff, refresh, onEdit, onChanged }: { staff: Staff; refresh: n
     const from = zonedToIso(start, '00:00', tz); const to = zonedToIso(addDays(start, 7), '00:00', tz);
     Promise.all([adminRpc<Booking[]>('solo_admin_bookings', { p_from: from, p_to: to }), adminRpc<Exception[]>('solo_admin_exceptions', { p_from: from, p_to: to })])
       .then(([b, e]) => { setBookings(b); setBlocks(e); }).catch(e => setError(errorLabel(e.message)));
+    // the busy times read from Proton, Google… (none until a calendar is added)
+    adminRpc<BusyTime[]>('solo_admin_busy', { p_from: from, p_to: to }).then(setBusy).catch(() => setBusy([]));
   }, [start, tz]);
   useEffect(load, [load, refresh]);
 
@@ -61,6 +64,8 @@ function Diary({ staff, refresh, onEdit, onChanged }: { staff: Staff; refresh: n
         <div className="admin-day-head"><h2>{longDay(day)}{day === today ? ' · aujourd’hui' : ''}</h2>
           <div className="admin-actions"><Button size="sm" variant="ghost" onClick={() => toggle(day)}>{off ? 'Rouvrir la journée' : 'Bloquer la journée'}</Button><Button size="sm" variant="ghost" aria-label={`Ajouter un rendez-vous le ${longDay(day)}`} onClick={() => onEdit({ date: day })}><Plus /></Button></div></div>
         {dayBlocks.filter(e => e.reason !== 'day_off').map(e => <p key={e.id} className="admin-block">Bloqué {localTime(e.starts_at, tz)}–{localTime(e.ends_at, tz)}{e.reason ? ` · ${e.reason}` : ''}</p>)}
+        {busy.filter(x => localDate(x.starts_at, tz) <= day && localDate(new Date(new Date(x.ends_at).getTime() - 1), tz) >= day).map(x =>
+          <p key={x.calendar + x.starts_at} className="admin-block is-external">{x.calendar} · {localTime(x.starts_at, tz)}–{localTime(x.ends_at, tz)}{x.summary ? ` · ${x.summary}` : ''}</p>)}
         {off && <p className="admin-block">Journée bloquée : aucune réservation possible en ligne.</p>}
         {list.length === 0 ? <p className="booking-muted">Aucun rendez-vous.</p> : <div className="admin-list">{list.map(b => <BookingCard key={b.id} booking={b} timeZone={tz} onEdit={() => onEdit({ booking: b })} onChanged={() => { onChanged(); load(); }} />)}</div>}
       </section>;

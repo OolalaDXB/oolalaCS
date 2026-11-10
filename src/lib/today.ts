@@ -4,13 +4,34 @@
 // from the browser: only each city's coordinates leave. An answer that does
 // not look as expected becomes null and the band says nothing for that city.
 
-export type Place = { key: string; name: string; latitude: number; longitude: number; tz: string };
-export const PLACES: Place[] = [
-  { key: 'dubai', name: 'Dubai', latitude: 25.2048, longitude: 55.2708, tz: 'Asia/Dubai' },
-  { key: 'vannes', name: 'Vannes', latitude: 47.6582, longitude: -2.7608, tz: 'Europe/Paris' },
+export type Place = { name: string; latitude: number; longitude: number; tz: string };
+// Where Darya meets clients and skis: Dubai, Vannes, Gudauri (Georgia). Chosen
+// again in the band; the choice stays in this browser.
+export const DEFAULT_PLACES: Place[] = [
+  { name: 'Dubai', latitude: 25.2048, longitude: 55.2708, tz: 'Asia/Dubai' },
+  { name: 'Vannes', latitude: 47.6582, longitude: -2.7608, tz: 'Europe/Paris' },
+  { name: 'Gudauri', latitude: 42.4776, longitude: 44.4785, tz: 'Asia/Tbilisi' },
 ];
-export const CLOCKS: [string, string][] = [['Dubai', 'Asia/Dubai'], ['Paris', 'Europe/Paris'], ['Tbilissi', 'Asia/Tbilisi']];
+const PLACES_KEY = 'oolala-today-places';
+export const isZone = (z: unknown): z is string => { if (typeof z !== 'string' || !/^[A-Za-z]+\/[A-Za-z0-9_+\-/]+$/.test(z)) return false; try { new Intl.DateTimeFormat('en', { timeZone: z }); return true; } catch { return false; } };
+export const isPlace = (p: unknown): p is Place => { const x = p as Place; return !!x && typeof x.name === 'string' && x.name.trim() !== '' && x.name.length <= 60
+  && Number.isFinite(x.latitude) && Number.isFinite(x.longitude) && Math.abs(x.latitude) <= 90 && Math.abs(x.longitude) <= 180 && isZone(x.tz); };
+export function readPlaces(): Place[] {
+  try { const v = JSON.parse(localStorage.getItem(PLACES_KEY) ?? 'null'); if (Array.isArray(v) && v.length >= 1 && v.length <= 4 && v.every(isPlace)) return v; } catch { /* default */ }
+  return DEFAULT_PLACES;
+}
+export function writePlaces(list: Place[]) { try { localStorage.setItem(PLACES_KEY, JSON.stringify(list)); } catch { /* this browser only */ } }
 
+// any town by name (Open-Meteo geocoding): name, region, country, coordinates, zone
+export type Found = Place & { label: string };
+export async function findPlaces(query: string): Promise<Found[]> {
+  const q = new URLSearchParams({ name: query.trim().slice(0, 80), count: '6', language: 'fr', format: 'json' });
+  const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${q}`);
+  if (!r.ok) return [];
+  const body = await r.json() as { results?: { name?: string; admin1?: string; country?: string; latitude?: number; longitude?: number; timezone?: string }[] };
+  return (body.results ?? []).map(x => ({ name: String(x.name ?? '').slice(0, 60), latitude: Number(x.latitude), longitude: Number(x.longitude), tz: String(x.timezone ?? ''),
+    label: [x.name, x.admin1 && x.admin1 !== x.name ? x.admin1 : '', x.country].filter(Boolean).join(', ') })).filter(isPlace);
+}
 export type Kind = 'clear' | 'partly' | 'cloudy' | 'fog' | 'drizzle' | 'rain' | 'snow' | 'storm';
 export const KIND_LABEL: Record<Kind, string> = { clear: 'Dégagé', partly: 'Éclaircies', cloudy: 'Couvert', fog: 'Brouillard', drizzle: 'Bruine', rain: 'Pluie', snow: 'Neige', storm: 'Orage' };
 

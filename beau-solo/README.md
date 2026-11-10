@@ -13,6 +13,9 @@ once it has run in production here.
 | Oolala starting data (types, office, hours) | `hosts/oolala/seed.sql` |
 | Public Edge Function `solo-public` | `functions/solo-public/index.ts` |
 | Notification sender `solo-outbox` (Resend, pg_cron every minute) | `functions/solo-outbox/index.ts`, `sql/0002_outbox_sender.sql` |
+| Richer contacts, news feed, calendar sync | `sql/0003_contacts_news_calendar.sql`, `hosts/oolala/news_sources.sql` |
+| News reader `solo-news` (RSS and Atom, pg_cron every 30 minutes, each source every 2 hours) | `functions/solo-news/index.ts`, `hosts/oolala/cron.sql` |
+| Calendar `solo-calendar` (GET: private iCal feed; POST: reads external calendars every 15 minutes) | `functions/solo-calendar/index.ts`, `hosts/oolala/cron.sql` |
 | Booking page and contact form | `src/routes/{-$lang}.rendez-vous.tsx`, `src/components/oolala/contact-form.tsx` |
 | Back office | `src/routes/admin.tsx`, `src/components/solo-admin/` (mobile first: today, diary, days off, hours, blocks, enquiries, clients, places, appointment types) |
 
@@ -69,6 +72,8 @@ psql -v ON_ERROR_STOP=1 -f sql/tests/supabase_stub.sql -f sql/0001_p1_core.sql -
 # → SOLO_P1 ok=47, then sql/0002_outbox_sender.sql + sql/tests/p2_outbox.sql → SOLO_P2 ok=9
 node --experimental-strip-types functions/tests/solo-public.test.mjs   # SOLO_PUBLIC ok=12
 node --experimental-strip-types functions/tests/solo-outbox.test.mjs   # SOLO_OUTBOX ok=10
+# then sql/0003_contacts_news_calendar.sql + sql/tests/p3_contacts_news_calendar.sql → SOLO_P3 ok=41
+node --experimental-strip-types functions/tests/solo-news-calendar.test.mjs   # SOLO_NEWS_CALENDAR ok=29
 ```
 
 The suite runs in one transaction and rolls back. It covers availability,
@@ -91,7 +96,27 @@ key, sender an `@oolala.ae` address). A wrong username shows in the Auth logs as
 `535 "Invalid username"` on `/otp`, and the sign-in screen says the email
 service is not answering.
 
+## News and calendar sync
+
+- **News** (home page, right column): France and UAE apart. Sources are RSS or
+  Atom feeds listed in Réglages → Actualités (Google News searches work well).
+  Each headline is tagged by subject (visa, société, fiscalité, banque,
+  immobilier, emploi, géorgie); tagged ones come first. Darya marks an item to
+  do, done or dismissed, or ties it to a client, which also writes a note on
+  that client's card.
+- **Calendar out**: Réglages → Synchro agenda creates a private link
+  (`solo-calendar?t=…`, only its SHA-256 is stored) that Proton, Google or Apple
+  subscribe to. Read-only; a new link replaces the old one.
+- **Calendar in**: the secret iCal address of another calendar (Proton: share
+  with anyone, full view; Google: secret address in iCal format). Its busy times
+  (recurrences, exceptions and moved occurrences included, 120 days ahead) block
+  the site's slots and show in the diary. The address never leaves the
+  database except to the sync function; the back office shows only its host.
+  A failed read keeps the previous busy times.
+- Deploy `solo-news` and `solo-calendar` with JWT verification off for
+  `solo-calendar` (calendar apps fetch it without a key) and on for `solo-news`.
+
 ## Not in P1
 
-Payments and invoices (BEAU PH, FactureX), calendar sync, reminders,
+Payments and invoices (BEAU PH, FactureX), reminders,
 presence periods per city (Dubai / Vannes).
