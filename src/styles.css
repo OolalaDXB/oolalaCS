@@ -861,3 +861,14 @@ a.country-fact:hover { border-color: var(--foreground); }
   body.pay-print .site-header, body.pay-print .site-footer, body.pay-print .pay-actions { display: none !important; }
   .invoice-doc { break-inside: auto; }
 }
+
+/* The client's invoice page */
+.pay-page { display: grid; gap: 22px; }
+.pay-summary { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 18px; }
+.pay-balance { display: grid; gap: 2px; margin: 6px 0 0; }
+.pay-balance span { font-size: 13px; color: var(--muted-foreground); }
+.pay-balance strong { font-size: 30px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.pay-actions { display: grid; gap: 6px; justify-items: start; max-width: 380px; }
+.pay-actions small { font-size: 12px; color: var(--muted-foreground); line-height: 1.5; }
+.pay-secondary { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.pay-page .invoice-doc { width: 100%; }

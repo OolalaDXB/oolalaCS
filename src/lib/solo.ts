@@ -1,6 +1,7 @@
 // Client for the BEAU Solo public endpoint (Supabase Edge Function `solo-public`).
 const base = (import.meta.env['VITE_SUPABASE_URL'] as string | undefined)?.replace(/\/+$/, '');
 export const soloEndpoint = base ? `${base}/functions/v1/solo-public` : '';
+export const payEndpoint = base ? `${base}/functions/v1/solo-pay` : '';
 
 export type SoloType = {
   slug: string; title: string; description: string | null; mode: 'video' | 'phone' | 'in_person';
@@ -20,11 +21,11 @@ export type SoloBooking = {
 
 export class SoloError extends Error {}
 
-export async function solo<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
-  if (!soloEndpoint) throw new SoloError('not_configured');
+export async function solo<T>(action: string, payload: Record<string, unknown> = {}, endpoint = soloEndpoint): Promise<T> {
+  if (!endpoint) throw new SoloError('not_configured');
   let res: Response;
   try {
-    res = await fetch(soloEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...payload }) });
+    res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...payload }) });
   } catch {
     throw new SoloError('network');
   }

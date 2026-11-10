@@ -16,6 +16,7 @@ import { Route as Char123LangChar125ContactRouteImport } from './routes/{-$lang}
 import { Route as Char123LangChar125EmiratsRouteImport } from './routes/{-$lang}.emirats'
 import { Route as Char123LangChar125FranceRouteImport } from './routes/{-$lang}.france'
 import { Route as Char123LangChar125GeorgieRouteImport } from './routes/{-$lang}.georgie'
+import { Route as Char123LangChar125PayerRouteImport } from './routes/{-$lang}.payer'
 import { Route as Char123LangChar125RendezVousRouteImport } from './routes/{-$lang}.rendez-vous'
 import { Route as Char123LangChar125GeorgieIndexRouteImport } from './routes/{-$lang}.georgie.index'
 import { Route as Char123LangChar125GeorgieInvestirRouteImport } from './routes/{-$lang}.georgie.investir'
@@ -61,6 +62,11 @@ const Char123LangChar125GeorgieRoute =
     path: '/georgie',
     getParentRoute: () => Char123LangChar125Route,
   } as any)
+const Char123LangChar125PayerRoute = Char123LangChar125PayerRouteImport.update({
+  id: '/payer',
+  path: '/payer',
+  getParentRoute: () => Char123LangChar125Route,
+} as any)
 const Char123LangChar125RendezVousRoute =
   Char123LangChar125RendezVousRouteImport.update({
     id: '/rendez-vous',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
   '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/payer': typeof Char123LangChar125PayerRoute
   '/{-$lang}/rendez-vous': typeof Char123LangChar125RendezVousRouteWithChildren
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/{-$lang}/contact': typeof Char123LangChar125ContactRoute
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
+  '/{-$lang}/payer': typeof Char123LangChar125PayerRoute
   '/{-$lang}': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
   '/{-$lang}/rendez-vous/gerer': typeof Char123LangChar125RendezVousGererRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/{-$lang}/emirats': typeof Char123LangChar125EmiratsRoute
   '/{-$lang}/france': typeof Char123LangChar125FranceRoute
   '/{-$lang}/georgie': typeof Char123LangChar125GeorgieRouteWithChildren
+  '/{-$lang}/payer': typeof Char123LangChar125PayerRoute
   '/{-$lang}/rendez-vous': typeof Char123LangChar125RendezVousRouteWithChildren
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/georgie/investir': typeof Char123LangChar125GeorgieInvestirRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
     | '/{-$lang}/georgie'
+    | '/{-$lang}/payer'
     | '/{-$lang}/rendez-vous'
     | '/{-$lang}/'
     | '/{-$lang}/georgie/investir'
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/contact'
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
+    | '/{-$lang}/payer'
     | '/{-$lang}'
     | '/{-$lang}/georgie/investir'
     | '/{-$lang}/rendez-vous/gerer'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/emirats'
     | '/{-$lang}/france'
     | '/{-$lang}/georgie'
+    | '/{-$lang}/payer'
     | '/{-$lang}/rendez-vous'
     | '/{-$lang}/'
     | '/{-$lang}/georgie/investir'
@@ -228,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/georgie'
       fullPath: '/{-$lang}/georgie'
       preLoaderRoute: typeof Char123LangChar125GeorgieRouteImport
+      parentRoute: typeof Char123LangChar125Route
+    }
+    '/{-$lang}/payer': {
+      id: '/{-$lang}/payer'
+      path: '/payer'
+      fullPath: '/{-$lang}/payer'
+      preLoaderRoute: typeof Char123LangChar125PayerRouteImport
       parentRoute: typeof Char123LangChar125Route
     }
     '/{-$lang}/rendez-vous': {
@@ -308,6 +327,7 @@ interface Char123LangChar125RouteChildren {
   Char123LangChar125EmiratsRoute: typeof Char123LangChar125EmiratsRoute
   Char123LangChar125FranceRoute: typeof Char123LangChar125FranceRoute
   Char123LangChar125GeorgieRoute: typeof Char123LangChar125GeorgieRouteWithChildren
+  Char123LangChar125PayerRoute: typeof Char123LangChar125PayerRoute
   Char123LangChar125RendezVousRoute: typeof Char123LangChar125RendezVousRouteWithChildren
   Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
 }
@@ -317,6 +337,7 @@ const Char123LangChar125RouteChildren: Char123LangChar125RouteChildren = {
   Char123LangChar125EmiratsRoute: Char123LangChar125EmiratsRoute,
   Char123LangChar125FranceRoute: Char123LangChar125FranceRoute,
   Char123LangChar125GeorgieRoute: Char123LangChar125GeorgieRouteWithChildren,
+  Char123LangChar125PayerRoute: Char123LangChar125PayerRoute,
   Char123LangChar125RendezVousRoute:
     Char123LangChar125RendezVousRouteWithChildren,
   Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
