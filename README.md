@@ -1,4 +1,4 @@
-# Oolala Global Connect
+# Oolala Corporate Services
 
 il faut faire un site Oolala Corporates Services UAE Georgia France. commence a travailler sur ces bases mais en reprenant les styles des sites https://www.every.io/ et https://movingo.ae/
 
