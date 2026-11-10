@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { ArrowLeft, CalendarPlus, Mail, MessageCircle, Phone, Pin, Upload, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  adminRpc, destinationLabel, errorLabel, serviceLabel, shortDateTime, stageLabel,
+  adminRpc, can, destinationLabel, errorLabel, serviceLabel, shortDateTime, stageLabel,
   type Booking, type Contact, type ContactProfile, type Enquiry, type Stage, type Staff,
 } from '@/lib/solo-admin';
 import { BookingCard, type EditorSeed } from './booking-editor';
 import { ContactForm } from './contact-form';
 import { ContactImport } from './contact-import';
+import { Invoices } from './invoices';
 
 const shortDay = (d: string) => new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`));
 
@@ -141,6 +142,9 @@ function ContactPanel({ id, staff, refresh, onBack, onPlan, onEdit, onChanged }:
     <section className="admin-section"><h2>Rendez-vous</h2>
       {c.bookings.length === 0 ? <p className="booking-muted">Aucun rendez-vous.</p> : <div className="admin-list">{[...upcoming.reverse(), ...past].map(b => <BookingCard key={b.id} booking={b} timeZone={staff.timezone} onEdit={() => onEdit({ booking: b })} onChanged={() => { onChanged(); load(); }} />)}</div>}
     </section>
+
+    {can(staff, 'solo:billing') && <section className="admin-section"><h2>Factures</h2>
+      <Invoices staff={staff} contact={{ id: c.id, name: c.name, email: c.email, phone: c.phone, company: c.company }} /></section>}
 
     <section className="admin-section"><h2>Demandes</h2>
       {c.enquiries.length === 0 ? <p className="booking-muted">Aucune demande.</p> : c.enquiries.map(e => <div key={e.id} className="admin-note-item"><small>{shortDateTime(e.created_at, staff.timezone)} · {e.need ?? ''} · {enquiryStatus[e.status]}</small><p>{e.message}</p></div>)}

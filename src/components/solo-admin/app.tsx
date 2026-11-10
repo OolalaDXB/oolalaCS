@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { CalendarDays, Inbox, KeyRound, LogOut, Settings2, Sun, Users } from 'lucide-react';
+import { CalendarDays, Inbox, KeyRound, LogOut, Receipt, Settings2, Sun, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 const logo = { url: '/images/oolala-cs-horizontal-dark.svg' };
@@ -8,15 +8,17 @@ import { BookingCard, BookingEditor, type EditorSeed } from './booking-editor';
 import { Agenda } from './agenda';
 import { Clients, Enquiries } from './crm';
 import { SettingsPanel } from './settings';
+import { Invoices } from './invoices';
 import { TodayBand } from './today-band';
 import { NewsPanel } from './news';
 
-type Tab = 'today' | 'agenda' | 'enquiries' | 'clients' | 'settings';
+type Tab = 'today' | 'agenda' | 'enquiries' | 'clients' | 'invoices' | 'settings';
 const tabs: { key: Tab; label: string; icon: typeof Sun; permission: string }[] = [
   { key: 'today', label: 'Aujourd’hui', icon: Sun, permission: '' },
   { key: 'agenda', label: 'Agenda', icon: CalendarDays, permission: 'solo:agenda' },
   { key: 'enquiries', label: 'Demandes', icon: Inbox, permission: 'solo:crm' },
   { key: 'clients', label: 'Clients', icon: Users, permission: 'solo:crm' },
+  { key: 'invoices', label: 'Factures', icon: Receipt, permission: 'solo:billing' },
   { key: 'settings', label: 'Réglages', icon: Settings2, permission: 'solo:settings' },
 ];
 
@@ -114,6 +116,7 @@ function Shell({ staff }: { staff: Staff }) {
       {tab === 'agenda' && <Agenda staff={staff} refresh={refresh} onEdit={setEditor} onChanged={saved} />}
       {tab === 'enquiries' && <Enquiries staff={staff} onPlan={seed => setEditor(seed)} />}
       {tab === 'clients' && <Clients staff={staff} refresh={refresh} onPlan={seed => setEditor(seed)} onEdit={setEditor} onChanged={saved} />}
+      {tab === 'invoices' && <Invoices staff={staff} />}
       {tab === 'settings' && <SettingsPanel staff={staff} />}
     </main>
     {editor && <BookingEditor staff={staff} seed={editor} onClose={() => setEditor(null)} onSaved={saved} />}
