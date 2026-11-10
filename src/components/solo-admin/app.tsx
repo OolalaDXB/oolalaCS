@@ -57,7 +57,7 @@ function SignIn() {
   }
   const switchTo = (next: 'password' | 'link') => { setMode(next); setState('idle'); setReason(''); };
   return <div className="admin-center">
-    <img className="admin-logo" src={logo.url} alt="Oolala Corporate Services" />
+    <img className="admin-logo admin-signin-logo" src={logo.url} alt="Oolala Corporate Services" />
     <h1 className="section-title">Back-office</h1>
     {state === 'sent' ? <p className="page-lead">Un lien de connexion vient d’être envoyé. Ouvrez-le depuis cet appareil.</p> : <form className="contact-form admin-signin" onSubmit={submit}>
       <div className="field"><label htmlFor="admin-email">Email</label><input id="admin-email" name="email" type="email" autoComplete="username" required /></div>

@@ -121,6 +121,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   // The back office has its own shell; the public header and footer stay off it.
   const isAdmin = useRouterState({ select: (state) => state.location.pathname.startsWith("/admin") });
+  // A back-office sign-in link that Supabase sent to another page of the site
+  // (its default address) still carries the session: hand it to /admin.
+  useEffect(() => {
+    if (isAdmin) return;
+    const { hash, search } = window.location;
+    if (/[#&]access_token=|[#&]error_description=/.test(hash) || /[?&]code=/.test(search)) window.location.replace(`/admin${search}${hash}`);
+  }, [isAdmin]);
 
   return (
     <QueryClientProvider client={queryClient}>
