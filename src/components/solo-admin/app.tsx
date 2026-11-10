@@ -22,10 +22,11 @@ const tabs: { key: Tab; label: string; icon: typeof Sun; permission: string }[] 
 export function AdminApp() {
   const [session, setSession] = useState<'loading' | 'out' | 'in'>('loading');
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session ? 'in' : 'out'));
-    const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s ? 'in' : 'out'));
+    const { data } = supabase.auth.onAuthStateChange((event, s) => { if (event === 'PASSWORD_RECOVERY') setRecovery(true); setSession(s ? 'in' : 'out'); });
     return () => data.subscription.unsubscribe();
   }, []);
   useEffect(() => {
@@ -35,6 +36,8 @@ export function AdminApp() {
 
   if (session === 'loading' || (session === 'in' && staff === undefined)) return <div className="admin-center"><p className="booking-muted">Chargement…</p></div>;
   if (session === 'out') return <SignIn />;
+  // Opened from a "forgotten password" email: choose the new one first.
+  if (recovery) return <div className="admin-center"><img className="admin-logo admin-signin-logo" src={logo.url} alt="Oolala Corporate Services" /><PasswordForm onDone={() => setRecovery(false)} /></div>;
   if (!staff) return <div className="admin-center"><img className="admin-logo" src={logo.url} alt="Oolala" /><p>Ce compte n’a pas accès au back-office.</p><Button variant="ghost" onClick={() => supabase.auth.signOut()}><LogOut /> Se déconnecter</Button></div>;
   return <Shell staff={staff} />;
 }
@@ -42,7 +45,7 @@ export function AdminApp() {
 // Password first: it needs no email. The emailed link stays available, but
 // Supabase only delivers it once the project has its own mail server (SMTP).
 function SignIn() {
-  const [mode, setMode] = useState<'password' | 'link'>('password');
+  const [mode, setMode] = useState<'password' | 'link' | 'reset'>('password');
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [reason, setReason] = useState('');
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -52,19 +55,23 @@ function SignIn() {
     setState('sending');
     const { error } = mode === 'password'
       ? await supabase.auth.signInWithPassword({ email, password: String(f.get('password') ?? '') })
-      : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/admin` } });
-    setReason(error ? signInError(error, mode) : '');
-    setState(error ? 'error' : mode === 'link' ? 'sent' : 'idle');
+      : mode === 'reset'
+        ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/admin` })
+        : await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/admin` } });
+    setReason(error ? signInError(error, mode === 'password' ? 'password' : 'link') : '');
+    setState(error ? 'error' : mode === 'password' ? 'idle' : 'sent');
   }
-  const switchTo = (next: 'password' | 'link') => { setMode(next); setState('idle'); setReason(''); };
+  const switchTo = (next: 'password' | 'link' | 'reset') => { setMode(next); setState('idle'); setReason(''); };
   return <div className="admin-center">
     <img className="admin-logo admin-signin-logo" src={logo.url} alt="Oolala Corporate Services" />
     <h1 className="section-title">Back-office</h1>
-    {state === 'sent' ? <p className="page-lead">Un lien de connexion vient d’être envoyé. Ouvrez-le depuis cet appareil.</p> : <form className="contact-form admin-signin" onSubmit={submit}>
+    {state === 'sent' ? <div className="admin-signin"><p className="page-lead">{mode === 'reset' ? 'Si cette adresse a un compte, un lien pour choisir un nouveau mot de passe vient d’être envoyé. Ouvrez-le depuis cet appareil.' : 'Un lien de connexion vient d’être envoyé. Ouvrez-le depuis cet appareil.'}</p><Button type="button" variant="ghost" size="sm" onClick={() => switchTo('password')}>Retour à la connexion</Button></div> : <form className="contact-form admin-signin" onSubmit={submit}>
       <div className="field"><label htmlFor="admin-email">Email</label><input id="admin-email" name="email" type="email" autoComplete="username" required /></div>
       {mode === 'password' && <div className="field"><label htmlFor="admin-password">Mot de passe</label><input id="admin-password" name="password" type="password" autoComplete="current-password" required /></div>}
-      <Button type="submit" disabled={state === 'sending'}>{state === 'sending' ? '…' : mode === 'password' ? 'Se connecter' : 'Recevoir un lien de connexion'}</Button>
+      {mode === 'reset' && <p className="booking-muted">Indiquez votre email : vous recevrez un lien pour choisir un nouveau mot de passe.</p>}
+      <Button type="submit" disabled={state === 'sending'}>{state === 'sending' ? '…' : mode === 'password' ? 'Se connecter' : mode === 'reset' ? 'Réinitialiser le mot de passe' : 'Recevoir un lien de connexion'}</Button>
       {state === 'error' && <p role="alert" className="booking-error">{reason}</p>}
+      {mode === 'password' && <Button type="button" variant="ghost" size="sm" onClick={() => switchTo('reset')}>Mot de passe oublié ?</Button>}
       <Button type="button" variant="ghost" size="sm" onClick={() => switchTo(mode === 'password' ? 'link' : 'password')}>{mode === 'password' ? 'Recevoir un lien par email à la place' : 'Se connecter avec un mot de passe'}</Button>
     </form>}
   </div>;
