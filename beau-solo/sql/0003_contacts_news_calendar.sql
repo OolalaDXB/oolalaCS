@@ -209,7 +209,7 @@ alter table beau_solo.news_items enable row level security;
 create or replace function beau_solo.news_topics(p_text text) returns text[]
 language sql immutable set search_path = '' as $$
   select coalesce(array_agg(t.topic order by t.topic), '{}') from (values
-    ('visa',        '(visa|golden|résiden|residen|residency|emirates id|titre de séjour|passeport|immigration|icp|gdrfa)'),
+    ('visa',        '(visa|golden|residency|residence permit|residence visa|titre de séjour|carte de résident|emirates id|passeport|passport|immigration|\micp\M|gdrfa)'),
     ('société',     '(société|entreprise|company|companies|free ?zone|freezone|mainland|licen[cs]e|rakez|dso|dmcc|ifza|meydan|création|incorporation|auto-entrepreneur|micro-entreprise|sasu|eurl)'),
     ('fiscalité',   '(impôt|impot|fiscal|tax|tva|vat|corporate tax|cotisation|urssaf|prélèvement|déclaration|e-invoic|facturation électronique|esr|ubo)'),
     ('banque',      '(banque|bank|compte|account|iban|aml|kyc|crédit|credit|prêt|loan)'),
