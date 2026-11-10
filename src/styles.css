@@ -570,3 +570,6 @@ a.country-fact:hover { border-color: var(--foreground); }
 .country-card-offer li { display: grid; grid-template-columns: 92px 1fr; gap: 8px; padding-block: 6px; border-top: 1px solid var(--border); }
 .country-card-offer strong { color: var(--foreground); font-weight: 500; }
 @media (max-width: 850px) { .pillar-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+/* Staff entry to the back office: the footer's copyright sign, styled as plain text. */
+.footer-staff { color: inherit; text-decoration: none; cursor: default; }
