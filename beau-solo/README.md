@@ -74,6 +74,8 @@ node --experimental-strip-types functions/tests/solo-public.test.mjs   # SOLO_PU
 node --experimental-strip-types functions/tests/solo-outbox.test.mjs   # SOLO_OUTBOX ok=10
 # then sql/0003_contacts_news_calendar.sql + sql/tests/p3_contacts_news_calendar.sql → SOLO_P3 ok=47
 node --experimental-strip-types functions/tests/solo-news-calendar.test.mjs   # SOLO_NEWS_CALENDAR ok=29
+node --experimental-strip-types functions/tests/solo-pay.test.mjs            # SOLO_PAY ok=11
+# then sql/0004_invoices.sql + sql/tests/p4_invoices.sql → SOLO_P4 ok=29
 node --experimental-strip-types functions/tests/contact-import.test.mjs       # CONTACT_IMPORT ok=8 (CSV and vCard reading)
 ```
 
@@ -117,7 +119,28 @@ service is not answering.
 - Deploy `solo-news` and `solo-calendar` with JWT verification off for
   `solo-calendar` (calendar apps fetch it without a key) and on for `solo-news`.
 
+## Invoices and payment links
+
+- Back office → Factures: drafts (free lines, quantity, unit price before VAT,
+  a VAT rate per line: government fees at 0), then **Émettre**: the invoice
+  gets its number (`OCS-2026-0001`, per year, no gaps), freezes the issuer
+  (Réglages → Facturation) and the client, and gets a private link
+  `/payer?n=<number>&t=<token>` (FR, EN, RU) to send by WhatsApp or email.
+  « Lien de paiement » is a one-line invoice issued at once.
+- Payments: recorded by hand (transfer, cash, other; can be voided) or by card
+  through Stripe Checkout (`solo-pay`, JWT off). A paid checkout is recorded once
+  per session, from the signed webhook. Paid when payments cover the total.
+- An issued invoice is never edited: cancel it (it keeps its number) and issue
+  another. An invoice with a payment cannot be cancelled.
+- Card payment needs the Edge Function secrets `STRIPE_SECRET_KEY` and
+  `STRIPE_WEBHOOK_SECRET`, and a Stripe webhook to
+  `…/functions/v1/solo-pay` on `checkout.session.completed` and
+  `checkout.session.async_payment_succeeded`. Without them the link offers bank
+  transfer only.
+- Printing: « Imprimer / PDF » prints the invoice sheet alone (browser PDF).
+- `hosts/oolala/billing.sql` fills Oolala's starting profile.
+
 ## Not in P1
 
-Payments and invoices (BEAU PH, FactureX), reminders,
+Online rails beyond Stripe (BEAU PH), e-invoicing (FactureX), credit notes, reminders,
 presence periods per city (Dubai / Vannes).
