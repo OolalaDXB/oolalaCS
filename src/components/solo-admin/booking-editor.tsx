@@ -6,7 +6,7 @@ import {
   type ApptType, type Booking, type BookingStatus, type Catalog, type Staff,
 } from '@/lib/solo-admin';
 
-export type EditorSeed = { booking?: Booking; contact?: { id?: string | undefined; name?: string | null; email?: string | null; phone?: string | null }; date?: string };
+export type EditorSeed = { booking?: Booking; contact?: { id?: string | undefined; name?: string | null; email?: string | null; phone?: string | null }; date?: string; time?: string };
 
 const waLink = (phone: string) => `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
 
@@ -95,7 +95,7 @@ export function BookingEditor({ staff, seed, onClose, onSaved }: { staff: Staff;
           {catalog.types.filter(t => t.active || t.id === typeId).map(t => <option key={t.id} value={t.id}>{t.title['fr']} · {modeLabel[t.mode]}</option>)}</select></div>
         <div className="form-three">
           <div className="field"><label htmlFor="e-date">Date</label><input id="e-date" name="date" type="date" required defaultValue={defaultDate} /></div>
-          <div className="field"><label htmlFor="e-time">Heure ({tz.split('/').pop()?.replace('_', ' ')})</label><input id="e-time" name="time" type="time" step={300} required defaultValue={b ? localTime(b.starts_at, tz) : '10:00'} /></div>
+          <div className="field"><label htmlFor="e-time">Heure ({tz.split('/').pop()?.replace('_', ' ')})</label><input id="e-time" name="time" type="time" step={300} required defaultValue={b ? localTime(b.starts_at, tz) : seed.time ?? '10:00'} /></div>
           <div className="field"><label htmlFor="e-duration">Durée (min)</label><input id="e-duration" name="duration" type="number" min={10} max={720} step={5} key={typeId} defaultValue={b ? Math.round((new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000) : type?.duration_min} /></div>
         </div>
         {type?.mode === 'in_person' && <div className="field"><label htmlFor="e-place">Lieu</label><select id="e-place" value={placeId} onChange={e => setPlaceId(e.target.value)}>

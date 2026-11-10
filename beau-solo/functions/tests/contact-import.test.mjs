@@ -1,0 +1,20 @@
+// node --experimental-strip-types beau-solo/functions/tests/contact-import.test.mjs
+import assert from 'node:assert/strict';
+const m = await import(new URL('../../../src/lib/contact-import.ts', import.meta.url).href);
+let n = 0; const ok = (c, s) => { assert.ok(c, s); n++; };
+const google = 'First Name,Last Name,E-mail 1 - Value,Phone 1 - Value,Organization 1 - Name,Organization 1 - Title,Notes,Group Membership\n"Anna","Petrova","anna@ex.com","+971 50 123","Petrova, LLC","CEO","Line1\nLine2","* myContacts ::: VIP"\nMarc,,marc@ex.com,,,,,\n,,,,,,,\n';
+const t = m.parseCsv(google);
+ok(t.length === 3, 'blank line dropped, quoted newline kept in its cell');
+const map = t[0].map(m.guessField);
+ok(JSON.stringify(map) === JSON.stringify(['first_name','last_name','email','phone','company','role','note','tags']), 'Google headers recognised');
+const rows = m.rowsFromCsv(t, map);
+ok(rows[0].company === 'Petrova, LLC' && rows[0].note === 'Line1\nLine2', 'quoted comma and newline');
+ok(JSON.stringify(rows[0].tags) === JSON.stringify(['mycontacts','vip']), 'Google groups become tags');
+const fr = m.parseCsv('﻿Prénom;Nom;Téléphone;Société;Ville;Pays\nÉlise;Martin;06 11 22 33 44;ACME;Vannes;France\n');
+ok(JSON.stringify(fr[0].map(m.guessField)) === JSON.stringify(['first_name','last_name','phone','company','city','country']), 'French headers with accents, semicolons, BOM');
+const vcf = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Dupont;Jean;;;\r\nFN:Jean Dupont\r\nORG:Dupont SARL;Ventes\r\nTITLE:Gérant\r\nitem1.EMAIL;type=INTERNET:jean@ex.com\r\nTEL;TYPE=CELL:+33 6 11 22 33 44\r\nADR;TYPE=HOME:;;12 rue de la Paix;Vannes;;56000;France\r\nURL:https://linkedin.com/in/jd\r\nNOTE:Rencontré\\, au salon\r\nEND:VCARD\r\nBEGIN:VCARD\r\nFN:Only Name\r\nEND:VCARD\r\n';
+const v = m.parseVcards(vcf);
+ok(v.length === 2 && v[0].first_name === 'Jean' && v[0].last_name === 'Dupont' && v[0].company === 'Dupont SARL' && v[0].email === 'jean@ex.com', 'vCard identity');
+ok(v[0].city === 'Vannes' && v[0].postal_code === '56000' && v[0].address_line === '12 rue de la Paix' && v[0].linkedin && v[0].note === 'Rencontré, au salon', 'vCard address, LinkedIn, escaped note');
+ok(m.isUsable(v[1]) && !m.isUsable({ company: 'X' }), 'a row needs a name, an email or a phone');
+console.log('CONTACT_IMPORT ok=' + n);

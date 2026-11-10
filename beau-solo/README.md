@@ -72,8 +72,9 @@ psql -v ON_ERROR_STOP=1 -f sql/tests/supabase_stub.sql -f sql/0001_p1_core.sql -
 # → SOLO_P1 ok=47, then sql/0002_outbox_sender.sql + sql/tests/p2_outbox.sql → SOLO_P2 ok=9
 node --experimental-strip-types functions/tests/solo-public.test.mjs   # SOLO_PUBLIC ok=12
 node --experimental-strip-types functions/tests/solo-outbox.test.mjs   # SOLO_OUTBOX ok=10
-# then sql/0003_contacts_news_calendar.sql + sql/tests/p3_contacts_news_calendar.sql → SOLO_P3 ok=41
+# then sql/0003_contacts_news_calendar.sql + sql/tests/p3_contacts_news_calendar.sql → SOLO_P3 ok=47
 node --experimental-strip-types functions/tests/solo-news-calendar.test.mjs   # SOLO_NEWS_CALENDAR ok=29
+node --experimental-strip-types functions/tests/contact-import.test.mjs       # CONTACT_IMPORT ok=8 (CSV and vCard reading)
 ```
 
 The suite runs in one transaction and rolls back. It covers availability,

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { CalendarDays, Inbox, KeyRound, LogOut, Plus, Settings2, Sun, Users } from 'lucide-react';
+import { CalendarDays, Inbox, KeyRound, LogOut, Settings2, Sun, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 const logo = { url: '/images/oolala-cs-horizontal-dark.svg' };
@@ -109,7 +109,7 @@ function Shell({ staff }: { staff: Staff }) {
     </header>
     <main className="admin-main">
       {account && <PasswordForm onDone={() => setAccount(false)} />}
-      <div className="admin-heading"><h1>{current.label}</h1>{can(staff, 'solo:agenda') && <Button size="sm" onClick={() => setEditor({})}><Plus /> Rendez-vous</Button>}</div>
+      <div className="admin-heading"><h1>{current.label}</h1></div>
       {tab === 'today' && <Today staff={staff} refresh={refresh} onEdit={setEditor} onChanged={saved} go={go} />}
       {tab === 'agenda' && <Agenda staff={staff} refresh={refresh} onEdit={setEditor} onChanged={saved} />}
       {tab === 'enquiries' && <Enquiries staff={staff} onPlan={seed => setEditor(seed)} />}

@@ -48,6 +48,27 @@ select public.solo_admin_contact_save(jsonb_build_object('id', (select v from _v
 select pg_temp.reset_role();
 select pg_temp.ok((select name = 'Anna P.' and stage = 'won' and status = 'client' and company is null from beau_solo.crm_contacts where id = (select v from _v where k = 'c')::uuid), 'an edit rewrites the card');
 
+/* contacts import */
+select pg_temp.as_staff('crm3@example.com');
+create temp table _imp as select public.solo_admin_contacts_import(jsonb_build_array(
+  jsonb_build_object('first_name', 'Anna', 'last_name', 'Petrova', 'email', 'ANNA@example.com', 'company', 'Should not overwrite', 'city', 'Dubai', 'tags', jsonb_build_array('salon')),
+  jsonb_build_object('name', 'Marc Dupont', 'email', 'marc@example.com', 'phone', '+33 6 11 22 33 44', 'note', 'Contact du salon'),
+  jsonb_build_object('name', 'Sans email', 'phone', '+971 50 999 8888'),
+  jsonb_build_object('email', 'not-an-email'),
+  jsonb_build_object('company', 'Only a company')), 'Salon Dubai') as r;
+select pg_temp.reset_role();
+select pg_temp.ok((select r from _imp) = '{"created": 2, "merged": 1, "skipped": 2, "to_review": 0}'::jsonb, 'two new, one merged by email, two empty rows skipped');
+select pg_temp.ok((select name = 'Anna P.' and company = 'Should not overwrite' and city = 'Dubai' and tags = '{salon}' from beau_solo.crm_contacts where id = (select v from _v where k = 'c')::uuid),
+  'a merge fills the empty fields and adds tags, never overwrites');
+select pg_temp.ok((select source = 'Salon Dubai' and created_by = 'crm3@example.com' from beau_solo.crm_contacts where email_norm = 'marc@example.com'), 'imported contacts carry the source and who imported them');
+select pg_temp.ok(exists (select 1 from beau_solo.crm_notes n join beau_solo.crm_contacts c on c.id = n.crm_contact_id where c.email_norm = 'marc@example.com' and n.body = 'Contact du salon'), 'a note column becomes a note');
+select pg_temp.as_staff('crm3@example.com');
+select pg_temp.ok((public.solo_admin_contacts_import(jsonb_build_array(jsonb_build_object('name', 'Autre Marc', 'phone', '0033611223344')), null) ->> 'merged')::int = 1,
+  'a second import matches by phone digits');
+do $$ begin perform public.solo_admin_contacts_import('{"a":1}'); raise exception 'FAIL: object accepted'; exception when sqlstate '22023' then null; end $$;
+select pg_temp.ok(true, 'only a list is imported');
+select pg_temp.reset_role();
+
 /* news */
 insert into beau_solo.news_sources (id, region, name, url) values
   ('00000000-0000-0000-0000-0000000000f1', 'ae', 'Test UAE', 'https://example.com/ae.xml'),

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { ArrowLeft, CalendarPlus, Mail, MessageCircle, Phone, Pin, UserPlus } from 'lucide-react';
+import { ArrowLeft, CalendarPlus, Mail, MessageCircle, Phone, Pin, Upload, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   adminRpc, destinationLabel, errorLabel, serviceLabel, shortDateTime, stageLabel,
@@ -7,6 +7,7 @@ import {
 } from '@/lib/solo-admin';
 import { BookingCard, type EditorSeed } from './booking-editor';
 import { ContactForm } from './contact-form';
+import { ContactImport } from './contact-import';
 
 const shortDay = (d: string) => new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`));
 
@@ -45,7 +46,7 @@ export function Enquiries({ staff, onPlan }: { staff: Staff; onPlan: (seed: Edit
           <p className="admin-quote">{e.message}</p>
           <Reach email={e.email} phone={e.phone} />
           <div className="admin-actions">
-            <Button size="sm" onClick={() => onPlan({ contact: { id: e.crm_contact_id ?? undefined, name: e.name, email: e.email, phone: e.phone } })}><CalendarPlus /> Planifier un rendez-vous</Button>
+            <Button size="sm" onClick={() => onPlan({ contact: { id: e.crm_contact_id ?? undefined, name: e.name, email: e.email, phone: e.phone } })}><CalendarPlus /> Planifier</Button>
             {status !== 'handled' && <Button size="sm" variant="ghost" onClick={() => set(e.id, 'handled')}>Traitée</Button>}
             {status !== 'archived' && <Button size="sm" variant="ghost" onClick={() => set(e.id, 'archived')}>Archiver</Button>}
             {status === 'new' && <Button size="sm" variant="ghost" onClick={() => set(e.id, 'spam')}>Indésirable</Button>}
@@ -62,17 +63,20 @@ export function Clients({ staff, refresh, onPlan, onEdit, onChanged }: { staff: 
   const [list, setList] = useState<Contact[] | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [reload, setReload] = useState(0);
   const [error, setError] = useState('');
   useEffect(() => {
     const id = setTimeout(() => adminRpc<Contact[]>('solo_admin_contacts', { p_search: search || null, p_status: status || null }).then(setList).catch(e => setError(errorLabel(e.message))), 250);
     return () => clearTimeout(id);
-  }, [search, status, refresh]);
+  }, [search, status, refresh, reload]);
   if (open) return <ContactPanel id={open} staff={staff} refresh={refresh} onBack={() => setOpen(null)} onPlan={onPlan} onEdit={onEdit} onChanged={onChanged} />;
   return <>
     <div className="admin-filters"><input type="search" placeholder="Nom, email, téléphone, société…" value={search} onChange={e => setSearch(e.target.value)} aria-label="Rechercher un client" />
       <select value={status} onChange={e => setStatus(e.target.value as typeof status)} aria-label="Statut ou étape"><option value="">Tous</option>{(Object.keys(contactStatus) as Contact['status'][]).map(s => <option key={s} value={s}>{contactStatus[s]}</option>)}
         <optgroup label="Étape">{(Object.keys(stageLabel) as Stage[]).map(s => <option key={s} value={s}>{stageLabel[s]}</option>)}</optgroup></select>
-      <Button size="sm" onClick={() => setCreating(true)}><UserPlus /> Nouveau contact</Button></div>
+      <div className="admin-actions"><Button size="sm" onClick={() => setCreating(true)}><UserPlus /> Nouveau contact</Button><Button size="sm" variant="outline" onClick={() => setImporting(true)}><Upload /> Importer</Button></div></div>
+    {importing && <ContactImport onClose={() => setImporting(false)} onDone={() => setReload(r => r + 1)} />}
     {creating && <ContactForm onClose={() => setCreating(false)} onSaved={c => { setCreating(false); setOpen(c.id); }} />}
     {error && <p role="alert" className="booking-error">{error}</p>}
     {!list ? <p className="booking-muted">Chargement…</p> : list.length === 0 ? <p className="booking-muted">Aucun contact.</p> : <div className="admin-list">{list.map(c =>
@@ -122,7 +126,7 @@ function ContactPanel({ id, staff, refresh, onBack, onPlan, onEdit, onChanged }:
         </dl>
         {c.needs_review && <p className="booking-muted">Fiche à vérifier : doublon possible.</p>}
         <Reach email={c.email} phone={c.phone} />
-        <div className="admin-actions"><Button size="sm" onClick={() => onPlan({ contact: { id: c.id, name: c.name, email: c.email, phone: c.phone } })}><CalendarPlus /> Planifier un rendez-vous</Button><Button size="sm" variant="ghost" onClick={() => setEditing(true)}>Modifier la fiche</Button></div>
+        <div className="admin-actions"><Button size="sm" onClick={() => onPlan({ contact: { id: c.id, name: c.name, email: c.email, phone: c.phone } })}><CalendarPlus /> Planifier</Button><Button size="sm" variant="ghost" onClick={() => setEditing(true)}>Modifier la fiche</Button></div>
       </>
       {editing && <ContactForm contact={c} onClose={() => setEditing(false)} onSaved={() => { setEditing(false); load(); }} />}
       {error && <p role="alert" className="booking-error">{error}</p>}

@@ -6,70 +6,24 @@ import {
   type Booking, type BusyTime, type Exception, type Hours, type Staff,
 } from '@/lib/solo-admin';
 import { BookingCard, type EditorSeed } from './booking-editor';
+import { Calendar } from './calendar';
+import { BlockForm } from './block-form';
 
 const WEEKDAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 const dayName = (d: number) => WEEKDAYS[d] ?? '';
 const ORDER = [1, 2, 3, 4, 5, 6, 0];
 
-type View = 'diary' | 'days' | 'hours' | 'blocks';
+type View = 'calendar' | 'days' | 'hours' | 'blocks';
 
 export function Agenda({ staff, refresh, onEdit, onChanged }: { staff: Staff; refresh: number; onEdit: (seed: EditorSeed) => void; onChanged: () => void }) {
-  const [view, setView] = useState<View>('diary');
+  const [view, setView] = useState<View>('calendar');
   return <>
-    <div className="admin-subtabs" role="tablist">{([['diary', 'Rendez-vous'], ['days', 'Jours bloqués'], ['hours', 'Horaires'], ['blocks', 'Blocages']] as [View, string][]).map(([k, label]) =>
+    <div className="admin-subtabs" role="tablist">{([['calendar', 'Calendrier'], ['days', 'Jours bloqués'], ['hours', 'Horaires'], ['blocks', 'Blocages']] as [View, string][]).map(([k, label]) =>
       <button key={k} type="button" role="tab" aria-selected={view === k} onClick={() => setView(k)}>{label}</button>)}</div>
-    {view === 'diary' && <Diary staff={staff} refresh={refresh} onEdit={onEdit} onChanged={onChanged} />}
+    {view === 'calendar' && <Calendar staff={staff} refresh={refresh} onEdit={onEdit} onChanged={onChanged} />}
     {view === 'days' && <DaysOff staff={staff} />}
     {view === 'hours' && <WeeklyHours />}
     {view === 'blocks' && <Blocks staff={staff} />}
-  </>;
-}
-
-function Diary({ staff, refresh, onEdit, onChanged }: { staff: Staff; refresh: number; onEdit: (seed: EditorSeed) => void; onChanged: () => void }) {
-  const tz = staff.timezone;
-  const today = localDate(new Date(), tz);
-  const [start, setStart] = useState(today);
-  const [bookings, setBookings] = useState<Booking[] | null>(null);
-  const [blocks, setBlocks] = useState<Exception[]>([]);
-  const [busy, setBusy] = useState<BusyTime[]>([]);
-  const [showCancelled, setShowCancelled] = useState(false);
-  const [error, setError] = useState('');
-  const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(start, i)), [start]);
-  const load = useCallback(() => {
-    const from = zonedToIso(start, '00:00', tz); const to = zonedToIso(addDays(start, 7), '00:00', tz);
-    Promise.all([adminRpc<Booking[]>('solo_admin_bookings', { p_from: from, p_to: to }), adminRpc<Exception[]>('solo_admin_exceptions', { p_from: from, p_to: to })])
-      .then(([b, e]) => { setBookings(b); setBlocks(e); }).catch(e => setError(errorLabel(e.message)));
-    // the busy times read from Proton, Google… (none until a calendar is added)
-    adminRpc<BusyTime[]>('solo_admin_busy', { p_from: from, p_to: to }).then(setBusy).catch(() => setBusy([]));
-  }, [start, tz]);
-  useEffect(load, [load, refresh]);
-
-  async function toggle(day: string) {
-    try { await adminRpc('solo_admin_day_toggle', { p_day: day }); load(); } catch (e) { setError(errorLabel((e as Error).message)); }
-  }
-
-  return <>
-    <div className="admin-range">
-      <Button variant="ghost" size="sm" onClick={() => setStart(addDays(start, -7))}><ChevronLeft /> Semaine précédente</Button>
-      {start !== today && <Button variant="ghost" size="sm" onClick={() => setStart(today)}>Aujourd’hui</Button>}
-      <Button variant="ghost" size="sm" onClick={() => setStart(addDays(start, 7))}>Semaine suivante <ChevronRight /></Button>
-    </div>
-    <label className="admin-check"><input type="checkbox" checked={showCancelled} onChange={e => setShowCancelled(e.target.checked)} /> Afficher les annulations</label>
-    {error && <p role="alert" className="booking-error">{error}</p>}
-    {!bookings ? <p className="booking-muted">Chargement…</p> : days.map(day => {
-      const list = bookings.filter(b => localDate(b.starts_at, tz) === day && (showCancelled || b.status !== 'cancelled'));
-      const dayBlocks = blocks.filter(e => e.kind === 'closed' && localDate(e.starts_at, tz) <= day && localDate(new Date(new Date(e.ends_at).getTime() - 1), tz) >= day);
-      const off = dayBlocks.some(e => e.reason === 'day_off');
-      return <section key={day} className={`admin-day${off ? ' is-off' : ''}`}>
-        <div className="admin-day-head"><h2>{longDay(day)}{day === today ? ' · aujourd’hui' : ''}</h2>
-          <div className="admin-actions"><Button size="sm" variant="ghost" onClick={() => toggle(day)}>{off ? 'Rouvrir la journée' : 'Bloquer la journée'}</Button><Button size="sm" variant="ghost" aria-label={`Ajouter un rendez-vous le ${longDay(day)}`} onClick={() => onEdit({ date: day })}><Plus /></Button></div></div>
-        {dayBlocks.filter(e => e.reason !== 'day_off').map(e => <p key={e.id} className="admin-block">Bloqué {localTime(e.starts_at, tz)}–{localTime(e.ends_at, tz)}{e.reason ? ` · ${e.reason}` : ''}</p>)}
-        {busy.filter(x => localDate(x.starts_at, tz) <= day && localDate(new Date(new Date(x.ends_at).getTime() - 1), tz) >= day).map(x =>
-          <p key={x.calendar + x.starts_at} className="admin-block is-external">{x.calendar} · {localTime(x.starts_at, tz)}–{localTime(x.ends_at, tz)}{x.summary ? ` · ${x.summary}` : ''}</p>)}
-        {off && <p className="admin-block">Journée bloquée : aucune réservation possible en ligne.</p>}
-        {list.length === 0 ? <p className="booking-muted">Aucun rendez-vous.</p> : <div className="admin-list">{list.map(b => <BookingCard key={b.id} booking={b} timeZone={tz} onEdit={() => onEdit({ booking: b })} onChanged={() => { onChanged(); load(); }} />)}</div>}
-      </section>;
-    })}
   </>;
 }
 
@@ -143,27 +97,9 @@ function Blocks({ staff }: { staff: Staff }) {
       .then(l => setList(l.filter(e => e.reason !== 'day_off'))).catch(e => setError(errorLabel(e.message)));
   }, []);
   useEffect(load, [load]);
-  async function add(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const f = new FormData(event.currentTarget); const get = (k: string) => String(f.get(k) ?? '');
-    const starts = zonedToIso(get('date'), get('start'), tz); const ends = zonedToIso(get('end_date') || get('date'), get('end'), tz);
-    if (ends <= starts) { setError('La fin doit être après le début.'); return; }
-    setError('');
-    try { await adminRpc('solo_admin_exception_add', { p_kind: get('kind'), p_starts: starts, p_ends: ends, p_reason: get('reason') }); event.currentTarget.reset(); load(); }
-    catch (e) { setError(errorLabel((e as Error).message)); }
-  }
   async function remove(id: string) { try { await adminRpc('solo_admin_exception_delete', { p_id: id }); load(); } catch (e) { setError(errorLabel((e as Error).message)); } }
   return <>
-    <form className="contact-form admin-panel" onSubmit={add}>
-      <h2>Ajouter un blocage ou une ouverture</h2>
-      <div className="form-two"><div className="field"><label htmlFor="x-kind">Type</label><select id="x-kind" name="kind"><option value="closed">Bloquer (indisponible)</option><option value="open">Ouvrir (créneaux en plus)</option></select></div>
-        <div className="field"><label htmlFor="x-reason">Motif</label><input id="x-reason" name="reason" placeholder="Déplacement, rendez-vous perso…" maxLength={200} /></div></div>
-      <div className="form-three"><div className="field"><label htmlFor="x-date">Du</label><input id="x-date" name="date" type="date" required min={today} defaultValue={today} /></div>
-        <div className="field"><label htmlFor="x-start">De</label><input id="x-start" name="start" type="time" step={900} required defaultValue="12:00" /></div>
-        <div className="field"><label htmlFor="x-end">À</label><input id="x-end" name="end" type="time" step={900} required defaultValue="14:00" /></div></div>
-      <div className="field"><label htmlFor="x-end-date">Jusqu’au (si plusieurs jours)</label><input id="x-end-date" name="end_date" type="date" min={today} /></div>
-      <Button type="submit">Ajouter</Button>
-    </form>
+    <BlockForm staff={staff} onDone={load} />
     {error && <p role="alert" className="booking-error">{error}</p>}
     <section className="admin-section"><h2>À venir</h2>
       {!list ? <p className="booking-muted">Chargement…</p> : list.length === 0 ? <p className="booking-muted">Aucun blocage prévu.</p> : <div className="admin-list">{list.map(e =>

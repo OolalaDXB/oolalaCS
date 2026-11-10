@@ -112,6 +112,61 @@ begin
     order by x.last_seen_at desc limit 300) s), '[]'::jsonb);
 end $$;
 
+-- Import a list of people (CSV or vCard read in the browser). A row matching
+-- exactly one contact by email, else by phone, fills that card's empty fields;
+-- otherwise it becomes a new contact. Nothing already on a card is overwritten.
+create or replace function public.solo_admin_contacts_import(p_rows jsonb, p_source text default 'Import')
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare
+  v_actor text := beau_solo.require('solo:crm');
+  r jsonb; v_ids uuid[]; v_id uuid;
+  v_email text; v_phone text; v_first text; v_last text; v_name text;
+  v_created int := 0; v_merged int := 0; v_skipped int := 0; v_ambiguous int := 0;
+begin
+  if jsonb_typeof(p_rows) <> 'array' or jsonb_array_length(p_rows) > 2000 then raise exception 'invalid_import' using errcode = '22023'; end if;
+  for r in select * from jsonb_array_elements(p_rows) loop
+    v_email := nullif(lower(btrim(r ->> 'email')), '');
+    if v_email is not null and v_email !~ '^[^@[:space:]]+@[^@[:space:]]+[.][^@[:space:]]+$' then v_email := null; end if;
+    v_phone := nullif(btrim(r ->> 'phone'), '');
+    v_first := nullif(btrim(r ->> 'first_name'), ''); v_last := nullif(btrim(r ->> 'last_name'), '');
+    v_name := coalesce(nullif(btrim(r ->> 'name'), ''), nullif(btrim(concat_ws(' ', v_first, v_last)), ''));
+    if v_name is null and v_email is null and v_phone is null then v_skipped := v_skipped + 1; continue; end if;
+    v_ids := null;
+    if v_email is not null then select array_agg(id) into v_ids from beau_solo.crm_contacts where email_norm = v_email; end if;
+    -- the same number written +33 6…, 0033 6… or 06…: its last nine digits
+    if coalesce(cardinality(v_ids), 0) = 0 and v_phone is not null and length(regexp_replace(v_phone, '[^0-9]', '', 'g')) >= 9 then
+      select array_agg(id) into v_ids from beau_solo.crm_contacts
+      where length(phone_norm) >= 9 and right(phone_norm, 9) = right(regexp_replace(v_phone, '[^0-9]', '', 'g'), 9);
+    end if;
+    if cardinality(v_ids) = 1 then
+      update beau_solo.crm_contacts set
+        name = coalesce(name, v_name), first_name = coalesce(first_name, v_first), last_name = coalesce(last_name, v_last),
+        email = coalesce(email, v_email), phone = coalesce(phone, v_phone),
+        company = coalesce(company, nullif(btrim(r ->> 'company'), '')), role = coalesce(role, nullif(btrim(r ->> 'role'), '')),
+        city = coalesce(city, nullif(btrim(r ->> 'city'), '')), country = coalesce(country, nullif(btrim(r ->> 'country'), '')),
+        address_line = coalesce(address_line, nullif(btrim(r ->> 'address_line'), '')), postal_code = coalesce(postal_code, nullif(btrim(r ->> 'postal_code'), '')),
+        website = coalesce(website, nullif(btrim(r ->> 'website'), '')), linkedin = coalesce(linkedin, nullif(btrim(r ->> 'linkedin'), '')),
+        tags = (select coalesce(array_agg(distinct t), '{}') from unnest(tags || beau_solo.text_list(r -> 'tags')) t)
+      where id = v_ids[1];
+      v_id := v_ids[1]; v_merged := v_merged + 1;
+    else
+      insert into beau_solo.crm_contacts (name, first_name, last_name, email, phone, company, role, city, country, address_line, postal_code, website, linkedin,
+        tags, source, created_by, needs_review)
+      values (v_name, v_first, v_last, v_email, v_phone, nullif(btrim(r ->> 'company'), ''), nullif(btrim(r ->> 'role'), ''), nullif(btrim(r ->> 'city'), ''),
+        nullif(btrim(r ->> 'country'), ''), nullif(btrim(r ->> 'address_line'), ''), nullif(btrim(r ->> 'postal_code'), ''), nullif(btrim(r ->> 'website'), ''),
+        nullif(btrim(r ->> 'linkedin'), ''), beau_solo.text_list(r -> 'tags'), coalesce(nullif(btrim(p_source), ''), 'Import'), v_actor, coalesce(cardinality(v_ids), 0) > 1)
+      returning id into v_id;
+      v_created := v_created + 1;
+      if coalesce(cardinality(v_ids), 0) > 1 then v_ambiguous := v_ambiguous + 1; end if;
+    end if;
+    if nullif(btrim(r ->> 'note'), '') is not null then
+      insert into beau_solo.crm_notes (crm_contact_id, body, author) values (v_id, left(btrim(r ->> 'note'), 5000), v_actor);
+    end if;
+  end loop;
+  perform beau_solo.log('crm', 'contacts_import', null, jsonb_build_object('created', v_created, 'merged', v_merged, 'skipped', v_skipped));
+  return jsonb_build_object('created', v_created, 'merged', v_merged, 'skipped', v_skipped, 'to_review', v_ambiguous);
+end $$;
+
 /* ------------------------------------------------------------------ */
 /* news: official and press feeds, France and UAE, each item triaged    */
 /* ------------------------------------------------------------------ */
@@ -469,7 +524,7 @@ declare f record;
 begin
   for f in select p.oid::regprocedure as sig, p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
            where n.nspname = 'public' and p.proname in (
-             'solo_admin_contact_save','solo_admin_contacts','solo_admin_news','solo_admin_news_set','solo_admin_news_sources','solo_admin_news_source_save',
+             'solo_admin_contact_save','solo_admin_contacts','solo_admin_contacts_import','solo_admin_news','solo_admin_news_set','solo_admin_news_sources','solo_admin_news_source_save',
              'solo_admin_calendar_feed','solo_admin_calendar_feed_issue','solo_admin_calendar_feed_revoke','solo_admin_calendar_add','solo_admin_calendar_set','solo_admin_busy',
              'solo_news_due','solo_news_ingest','solo_calendar_feed','solo_calendar_due','solo_calendar_store') loop
     execute 'revoke all on function ' || f.sig::text || ' from public, anon, authenticated';

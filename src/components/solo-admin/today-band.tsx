@@ -60,6 +60,10 @@ export function TodayBand({ name, timeZone }: { name: string; timeZone: string }
   const [now, setNow] = useState(() => new Date());
   const [places, setPlaces] = useState<Place[]>(DEFAULT_PLACES);
   const [editing, setEditing] = useState(false);
+  // on a phone the band shows one city (or all), chosen by a tap; kept in this browser
+  const [focus, setFocus] = useState<number | 'all'>(0);
+  useEffect(() => { try { const v = localStorage.getItem('oolala-today-focus'); if (v === 'all') setFocus('all'); else if (v) setFocus(Number(v) || 0); } catch { /* default */ } }, []);
+  const choose = (f: number | 'all') => { setFocus(f); try { localStorage.setItem('oolala-today-focus', String(f)); } catch { /* this browser only */ } };
   const [reports, setReports] = useState<Record<string, Report>>({});
   useEffect(() => { setPlaces(readPlaces()); }, []);
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 20_000); return () => clearInterval(t); }, []);
@@ -80,10 +84,14 @@ export function TodayBand({ name, timeZone }: { name: string; timeZone: string }
     <div className="today-head"><p><span className="today-date">{date}</span><strong>{greeting(hour)} {name.split(' ')[0]}</strong></p>
       <button type="button" className="today-link" onClick={() => setEditing(e => !e)} aria-expanded={editing}>{editing ? 'Fermer' : 'Villes'}</button></div>
     {editing && <PlacePicker places={places} onChange={change} onClose={() => setEditing(false)} />}
-    <ul className="today-rows">{places.map(p => {
+    {places.length > 1 && <div className="today-focus" role="tablist" aria-label="Ville affichée">{places.map((p, i) =>
+      <button key={keyOf(p)} type="button" role="tab" aria-selected={focus === i || (focus !== 'all' && focus >= places.length && i === 0)} onClick={() => choose(i)}>{p.name}</button>)}
+      <button type="button" role="tab" aria-selected={focus === 'all'} onClick={() => choose('all')}>Toutes</button></div>}
+    <ul className={`today-rows${focus === 'all' ? ' is-all' : ''}`}>{places.map((p, i) => {
       const r = reports[keyOf(p)], w = r?.weather, band = aqiBand(r?.aqi ?? null);
       const day = new Intl.DateTimeFormat('fr-FR', { timeZone: p.tz, weekday: 'short' });
-      return <li key={keyOf(p)} className="today-row">
+      const shown = focus === 'all' || focus === i || (focus >= places.length && i === 0);
+      return <li key={keyOf(p)} className={`today-row${shown ? ' is-shown' : ''}`} onClick={() => { if (focus !== 'all') choose((i + 1) % places.length); }}>
         <Clock now={now} zone={p.tz} label={p.name} />
         <div className="today-place"><strong>{p.name}</strong>
           <span className="today-now"><Icon kind={w?.kind ?? null} size={20} />{w ? <>{Math.round(w.temperature)}°<small>{w.kind ? KIND_LABEL[w.kind] : ''}{w.feels != null && Math.abs(w.feels - w.temperature) >= 3 ? ` · ressenti ${Math.round(w.feels)}°` : ''}</small></> : <small>{r ? 'météo indisponible' : '…'}</small>}</span>
