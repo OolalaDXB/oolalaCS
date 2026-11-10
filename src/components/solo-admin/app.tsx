@@ -8,6 +8,7 @@ import { BookingCard, BookingEditor, type EditorSeed } from './booking-editor';
 import { Agenda } from './agenda';
 import { Clients, Enquiries } from './crm';
 import { SettingsPanel } from './settings';
+import { TodayBand } from './today-band';
 
 type Tab = 'today' | 'agenda' | 'enquiries' | 'clients' | 'settings';
 const tabs: { key: Tab; label: string; icon: typeof Sun; permission: string }[] = [
@@ -137,9 +138,11 @@ function Today({ staff, refresh, onEdit, onChanged, go }: { staff: Staff; refres
   const [error, setError] = useState('');
   const load = useCallback(() => { adminRpc<Overview>('solo_admin_overview').then(setData).catch(e => setError(String(e.message))); }, []);
   useEffect(load, [load, refresh]);
-  if (error) return <p className="booking-error">{error}</p>;
-  if (!data) return <p className="booking-muted">Chargement…</p>;
+  const band = <TodayBand name={staff.name} timeZone={staff.timezone} />;
+  if (error) return <>{band}<p className="booking-error">{error}</p></>;
+  if (!data) return <>{band}<p className="booking-muted">Chargement…</p></>;
   return <>
+    {band}
     <div className="admin-stats">
       {data.pending !== null && <button type="button" onClick={() => go('agenda')}><strong>{data.pending}</strong><span>à confirmer</span></button>}
       {data.new_enquiries !== null && <button type="button" onClick={() => go('enquiries')}><strong>{data.new_enquiries}</strong><span>nouvelles demandes</span></button>}

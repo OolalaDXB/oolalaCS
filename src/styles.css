@@ -573,3 +573,33 @@ a.country-fact:hover { border-color: var(--foreground); }
 
 /* Staff entry to the back office: the footer's copyright sign, styled as plain text. */
 .footer-staff { color: inherit; text-decoration: none; cursor: default; }
+
+/* Back office: the Today band (date, weather and air in Dubai and Vannes, three clocks). */
+.today-band { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 24px; background: var(--background); }
+.today-date { margin: 0; font-size: 13px; color: var(--muted-foreground); text-transform: capitalize; }
+.today-greet { margin: 2px 0 0; font-size: 24px; font-weight: 500; }
+.today-places { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.today-place { display: grid; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; min-width: 0; }
+.today-now { display: flex; gap: 10px; align-items: flex-start; }
+.today-now > div { display: grid; gap: 2px; min-width: 0; }
+.today-now strong { font-size: 15px; font-weight: 600; }
+.today-now span { font-size: 13px; color: var(--muted-foreground); }
+.today-aqi { justify-self: start; font-size: 12px !important; padding: 1px 8px; border-radius: 999px; color: #fff !important; }
+.today-aqi.is-good { background: #1a8f65; } .today-aqi.is-moderate { background: #a77f05; } .today-aqi.is-sensitive { background: #c9542a; } .today-aqi.is-unhealthy { background: #b02a35; } .today-aqi.is-hazardous { background: #7e1d6b; }
+.today-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.today-days li { display: grid; justify-items: center; gap: 2px; font-size: 12px; font-variant-numeric: tabular-nums; text-transform: capitalize; }
+.today-days small { color: var(--muted-foreground); }
+.today-days .today-rain { color: #1d6fe6; }
+.today-clocks { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-around; border-top: 1px solid var(--border); padding-top: 14px; }
+.today-clocks figure { margin: 0; display: flex; align-items: center; gap: 8px; }
+.today-clocks svg { width: 48px; height: 48px; }
+.today-clocks figcaption { display: grid; font-size: 12px; color: var(--muted-foreground); }
+.today-clocks figcaption strong { font-size: 16px; font-weight: 600; color: var(--foreground); font-variant-numeric: tabular-nums; }
+.today-rim { fill: var(--background); stroke: var(--border); stroke-width: 2; }
+.today-ticks line { stroke: var(--muted-foreground); }
+.today-hand { stroke: var(--foreground); }
+.today-pin { fill: var(--foreground); }
+.today-clocks .is-night .today-rim { fill: var(--primary); stroke: var(--primary); }
+.today-clocks .is-night .today-hand, .today-clocks .is-night .today-ticks line { stroke: var(--primary-foreground); }
+.today-clocks .is-night .today-pin { fill: var(--primary-foreground); }
+.today-source { margin: 0; font-size: 11px; color: var(--muted-foreground); }
